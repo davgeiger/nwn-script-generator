@@ -32,7 +32,6 @@ export type ItemPropertyDefinition = {
 export type PropertyValue = string | number | boolean
 
 export type ItemPropertyConfig = {
-  itemId: string
   propertyId: string
   values: Record<string, PropertyValue>
 }

@@ -16,4 +16,5 @@ export type LevelItem = {
   resRef: string
   tag: string
   slot: ItemSlot
+  grantLevel: number
 }

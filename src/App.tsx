@@ -1,7 +1,11 @@
-import { PropertyEditor } from "./components/PropertyEditor"
+import { TierListEditor } from "./components/TierListEditor"
 
-export function App() {
-  return <PropertyEditor />
+function App() {
+  return (
+    <main className="min-h-screen p-8">
+      <TierListEditor />
+    </main>
+  )
 }
 
 export default App

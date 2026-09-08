@@ -1,12 +1,13 @@
 import type { LevelItem } from "@/types/items"
 
-export const items: LevelItem[] = [
+export const initialItems: LevelItem[] = [
   {
     id: "weapon",
     name: "Rapier",
     resRef: "lvl_weapon",
     tag: "LVL_WEAPON",
     slot: "weapon",
+    grantLevel: 1,
   },
   {
     id: "shield",
@@ -14,6 +15,7 @@ export const items: LevelItem[] = [
     resRef: "lvl_shield",
     tag: "LVL_SHIELD",
     slot: "shield",
+    grantLevel: 2,
   },
   {
     id: "armor",
@@ -21,5 +23,70 @@ export const items: LevelItem[] = [
     resRef: "lvl_armor",
     tag: "LVL_ARMOR",
     slot: "armor",
+    grantLevel: 3,
+  },
+  {
+    id: "helmet",
+    name: "Helm",
+    resRef: "lvl_helmet",
+    tag: "LVL_HELMET",
+    slot: "helmet",
+    grantLevel: 4,
+  },
+  {
+    id: "gloves",
+    name: "Handschuhe",
+    resRef: "lvl_gloves",
+    tag: "LVL_GLOVES",
+    slot: "gloves",
+    grantLevel: 5,
+  },
+  {
+    id: "boots",
+    name: "Stiefel",
+    resRef: "lvl_boots",
+    tag: "LVL_BOOTS",
+    slot: "boots",
+    grantLevel: 6,
+  },
+  {
+    id: "belt",
+    name: "Gürtel",
+    resRef: "lvl_belt",
+    tag: "LVL_BELT",
+    slot: "belt",
+    grantLevel: 7,
+  },
+  {
+    id: "cloak",
+    name: "Umhang",
+    resRef: "lvl_cloak",
+    tag: "LVL_CLOAK",
+    slot: "cloak",
+    grantLevel: 8,
+  },
+  {
+    id: "amulet",
+    name: "Amulett",
+    resRef: "lvl_amu",
+    tag: "LVL_AMU",
+    slot: "amulet",
+    grantLevel: 9,
+  },
+  {
+    id: "ringl",
+    name: "Ring",
+    resRef: "lvl_ring_l",
+    tag: "LVL_RING_L",
+    slot: "ring",
+    grantLevel: 10,
+  },
+  {
+    id: "ringr",
+    name: "Ring",
+    resRef: "lvl_ring_r",
+    tag: "LVL_RING_R",
+    slot: "ring",
+    grantLevel: 10,
   },
 ]
