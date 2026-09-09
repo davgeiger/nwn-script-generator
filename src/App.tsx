@@ -1,9 +1,9 @@
-import { TierListEditor } from "./components/TierListEditor"
+import { ProjectEditor } from "./components/ProjectEditor"
 
 function App() {
   return (
     <main className="min-h-screen p-8">
-      <TierListEditor />
+      <ProjectEditor />
     </main>
   )
 }
