@@ -2,8 +2,8 @@ import type { ItemPropertyConfig } from "@/types/properties"
 import type { TierConfig } from "@/types/tiers"
 import { itemProperties } from "@/data/itemProperties"
 import {
+  getParameterLabel,
   getPropertyOperationLabel,
-  getPropertyValues,
 } from "@/utils/propertyResolver"
 import type { LevelItem } from "@/types/items"
 
@@ -129,23 +129,31 @@ export function TierEditor({ tier, items, onChange }: TierEditorProps) {
                   property.operation
                 )
 
+                const displayParameters =
+                  property.operation === "remove"
+                    ? definition.parameters.filter((parameter) =>
+                        definition.keyParameters?.includes(parameter.id)
+                      )
+                    : definition.parameters
+
                 return (
                   <div key={propertyIndex} className="rounded-md border p-3">
                     <p className="font-medium">
                       {operationLabel}: {definition.name}
                     </p>
 
-                    {property.operation !== "remove" &&
-                      getPropertyValues(definition, property.values).map(
-                        (value) => (
-                          <p
-                            key={value.id}
-                            className="text-sm text-muted-foreground"
-                          >
-                            {value.label}: {value.value}
-                          </p>
-                        )
-                      )}
+                    {displayParameters.map((parameter) => (
+                      <p
+                        key={parameter.id}
+                        className="text-sm text-muted-foreground"
+                      >
+                        {parameter.label}:{" "}
+                        {getParameterLabel(
+                          parameter,
+                          property.values[parameter.id]
+                        )}
+                      </p>
+                    ))}
 
                     <Button
                       variant="destructive"

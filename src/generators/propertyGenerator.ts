@@ -74,3 +74,16 @@ export function generatePropertyStatement(
       return `IPRemoveMatchingItemProperties(${itemVariable}, ${definition.nwscript.propertyType}, -1);`
   }
 }
+
+export function generateResolvedPropertyStatement(
+  config: ItemPropertyConfig,
+  itemVariable = "oItem"
+): string | undefined {
+  const expression = generatePropertyExpression(config)
+
+  if (!expression) {
+    return undefined
+  }
+
+  return `IPSafeAddItemProperty(${itemVariable}, ${expression});`
+}

@@ -55,6 +55,7 @@ export const itemProperties: ItemPropertyDefinition[] = [
     id: "damageBonus",
     name: "Schadensbonus",
     allowedSlots: ["weapon"],
+    keyParameters: ["damageType"],
     parameters: [
       {
         id: "damageType",

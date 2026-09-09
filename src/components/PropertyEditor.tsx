@@ -46,16 +46,27 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
     [availableProperties, selectedPropertyId]
   )
 
+  const visibleParameters = selectedProperty
+    ? selectedOperation === "remove"
+      ? selectedProperty.parameters.filter((parameter) =>
+          selectedProperty.keyParameters?.includes(parameter.id)
+        )
+      : selectedProperty.parameters
+    : []
+
   const isPropertyValid = useMemo(() => {
     if (!selectedProperty) {
       return false
     }
 
-    if (selectedOperation === "remove") {
-      return true
-    }
+    const parametersToValidate =
+      selectedOperation === "remove"
+        ? selectedProperty.parameters.filter((parameter) =>
+            selectedProperty.keyParameters?.includes(parameter.id)
+          )
+        : selectedProperty.parameters
 
-    return selectedProperty.parameters.every((parameter) => {
+    return parametersToValidate.every((parameter) => {
       if (!parameter.required) {
         return true
       }
@@ -86,7 +97,7 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
     const propertyConfig: ItemPropertyConfig = {
       propertyId: selectedProperty.id,
       operation: selectedOperation,
-      values: selectedOperation === "remove" ? {} : parameterValues,
+      values: parameterValues,
     }
 
     onAddProperty(propertyConfig)
@@ -142,9 +153,9 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
         </Select>
       </div>
 
-      {selectedProperty && selectedOperation !== "remove" && (
+      {selectedProperty && (
         <div className="space-y-4">
-          {selectedProperty.parameters.map((parameter) => (
+          {visibleParameters.map((parameter) => (
             <div key={parameter.id} className="space-y-2">
               <label className="text-sm font-medium">{parameter.label}</label>
 

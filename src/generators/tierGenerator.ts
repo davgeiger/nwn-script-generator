@@ -1,9 +1,17 @@
-import { generatePropertyStatement } from "@/generators/propertyGenerator"
+import { generateResolvedPropertyStatement } from "@/generators/propertyGenerator"
 import type { LevelItem } from "@/types/items"
 import type { TierConfig } from "@/types/tiers"
 import { indent } from "@/generators/utils"
+import {
+  getManagedPropertyTypes,
+  type ResolvedTier,
+} from "@/resolvers/tierResolver"
 
-export function generateTierCode(tier: TierConfig, items: LevelItem[]): string {
+export function generateResolvedTierCode(
+  tier: ResolvedTier,
+  items: LevelItem[],
+  tiers: TierConfig[]
+): string {
   const itemBlocks = tier.items
     .map((itemConfig, itemIndex) => {
       const item = items.find((item) => item.id === itemConfig.itemId)
@@ -15,27 +23,39 @@ export function generateTierCode(tier: TierConfig, items: LevelItem[]): string {
       const itemVariable = `oItem${itemIndex + 1}`
 
       const statements = itemConfig.properties
-        .map((property) => generatePropertyStatement(property, itemVariable))
+        .map((property) =>
+          generateResolvedPropertyStatement(property, itemVariable)
+        )
         .filter((statement): statement is string => statement !== undefined)
 
-      if (statements.length === 0) {
+      const propertyTypes = getManagedPropertyTypes(tiers, item.id, tier.level)
+
+      const cleanupStatements = propertyTypes.map(
+        (propertyType) =>
+          `IPRemoveMatchingItemProperties(${itemVariable}, ${propertyType}, -1);`
+      )
+
+      if (cleanupStatements.length === 0 && statements.length === 0) {
         return undefined
       }
 
+      const propertyCode = [
+        ...cleanupStatements,
+        ...(cleanupStatements.length > 0 && statements.length > 0 ? [""] : []),
+        ...statements,
+      ].join("\n")
+
       return [
         `// ${item.name}`,
-        `object ${itemVariable} = GetItemByTag("${item.tag}");`,
+        `object ${itemVariable} = GetPlayerItemByTag(oPC, "${item.tag}");`,
         "",
-        ...statements,
+        `if (GetIsObjectValid(${itemVariable}))`,
+        "{",
+        indent(propertyCode),
+        "}",
       ].join("\n")
     })
     .filter((block): block is string => block !== undefined)
 
-  if (itemBlocks.length === 0) {
-    return ""
-  }
-
-  const content = itemBlocks.join("\n\n")
-
-  return [`if (nLevel >= ${tier.level})`, "{", indent(content), "}"].join("\n")
+  return itemBlocks.join("\n\n")
 }

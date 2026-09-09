@@ -5,6 +5,9 @@ import type {
   PropertyValue,
 } from "@/types/properties"
 
+import { itemProperties } from "@/data/itemProperties"
+import type { ItemPropertyConfig } from "@/types/properties"
+
 export function getPropertyOperationLabel(
   operation: PropertyOperation
 ): string {
@@ -63,4 +66,24 @@ export function getParameterNwScriptValue(
   }
 
   return String(value)
+}
+
+export function getPropertyKey(config: ItemPropertyConfig): string {
+  const definition = itemProperties.find(
+    (property) => property.id === config.propertyId
+  )
+
+  if (!definition) {
+    return config.propertyId
+  }
+
+  if (!definition.keyParameters || definition.keyParameters.length === 0) {
+    return config.propertyId
+  }
+
+  const keyValues = definition.keyParameters.map((parameterId) =>
+    String(config.values[parameterId] ?? "")
+  )
+
+  return [config.propertyId, ...keyValues].join(":")
 }

@@ -26,6 +26,7 @@ export type ItemPropertyDefinition = {
   name: string
   allowedSlots: ItemSlot[]
   parameters: PropertyParameter[]
+  keyParameters?: string[]
   nwscript: ItemPropertyNwScript
 }
 
