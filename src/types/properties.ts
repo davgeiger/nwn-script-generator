@@ -33,5 +33,8 @@ export type PropertyValue = string | number | boolean
 
 export type ItemPropertyConfig = {
   propertyId: string
+  operation: PropertyOperation
   values: Record<string, PropertyValue>
 }
+
+export type PropertyOperation = "add" | "replace" | "remove"

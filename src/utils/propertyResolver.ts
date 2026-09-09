@@ -1,8 +1,24 @@
 import type {
   ItemPropertyDefinition,
+  PropertyOperation,
   PropertyParameter,
   PropertyValue,
 } from "@/types/properties"
+
+export function getPropertyOperationLabel(
+  operation: PropertyOperation
+): string {
+  switch (operation) {
+    case "add":
+      return "Hinzufügen"
+
+    case "replace":
+      return "Ersetzen"
+
+    case "remove":
+      return "Entfernen"
+  }
+}
 
 export function getParameterLabel(
   parameter: PropertyParameter,

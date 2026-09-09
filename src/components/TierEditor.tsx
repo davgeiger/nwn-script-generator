@@ -1,7 +1,10 @@
 import type { ItemPropertyConfig } from "@/types/properties"
 import type { TierConfig } from "@/types/tiers"
 import { itemProperties } from "@/data/itemProperties"
-import { getPropertyValues } from "@/utils/propertyResolver"
+import {
+  getPropertyOperationLabel,
+  getPropertyValues,
+} from "@/utils/propertyResolver"
 import type { LevelItem } from "@/types/items"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -113,51 +116,48 @@ export function TierEditor({ tier, items, onChange }: TierEditorProps) {
             <div key={item.id} className="space-y-4 rounded-md border p-4">
               <h2 className="font-semibold">{item.name}</h2>
 
-              {itemConfig && itemConfig.properties.length > 0 && (
-                <div className="space-y-2">
-                  {itemConfig.properties.map((property, index) => {
-                    const definition = itemProperties.find(
-                      (definition) => definition.id === property.propertyId
-                    )
+              {itemConfig?.properties.map((property, propertyIndex) => {
+                const definition = itemProperties.find(
+                  (definition) => definition.id === property.propertyId
+                )
 
-                    if (!definition) {
-                      return null
-                    }
+                if (!definition) {
+                  return null
+                }
 
-                    const values = getPropertyValues(
-                      definition,
-                      property.values
-                    )
+                const operationLabel = getPropertyOperationLabel(
+                  property.operation
+                )
 
-                    return (
-                      <div
-                        key={`${property.propertyId}-${index}`}
-                        className="flex items-start justify-between rounded-md bg-muted p-3"
-                      >
-                        <div>
-                          <div className="font-medium">{definition.name}</div>
+                return (
+                  <div key={propertyIndex} className="rounded-md border p-3">
+                    <p className="font-medium">
+                      {operationLabel}: {definition.name}
+                    </p>
 
-                          <div className="mt-1 text-sm text-muted-foreground">
-                            {values.map((parameter) => (
-                              <div key={parameter.id}>
-                                {parameter.label}: {parameter.value}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
+                    {property.operation !== "remove" &&
+                      getPropertyValues(definition, property.values).map(
+                        (value) => (
+                          <p
+                            key={value.id}
+                            className="text-sm text-muted-foreground"
+                          >
+                            {value.label}: {value.value}
+                          </p>
+                        )
+                      )}
 
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleRemoveProperty(item.id, index)}
-                        >
-                          Entfernen
-                        </Button>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
+                    <Button
+                      variant="destructive"
+                      onClick={() =>
+                        handleRemoveProperty(item.id, propertyIndex)
+                      }
+                    >
+                      Eintrag löschen
+                    </Button>
+                  </div>
+                )
+              })}
 
               <PropertyEditor
                 item={item}

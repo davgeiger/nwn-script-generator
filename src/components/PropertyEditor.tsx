@@ -9,9 +9,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+
 import { itemProperties } from "@/data/itemProperties"
-import type { ItemPropertyConfig, PropertyValue } from "@/types/properties"
 import type { LevelItem } from "@/types/items"
+import { propertyOperations } from "@/data/propertyOperations"
+import type {
+  ItemPropertyConfig,
+  PropertyOperation,
+  PropertyValue,
+} from "@/types/properties"
 
 type PropertyEditorProps = {
   item: LevelItem
@@ -23,6 +29,8 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
   const [parameterValues, setParameterValues] = useState<
     Record<string, PropertyValue>
   >({})
+  const [selectedOperation, setSelectedOperation] =
+    useState<PropertyOperation>("add")
 
   const availableProperties = useMemo(() => {
     return itemProperties.filter((property) =>
@@ -43,6 +51,10 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
       return false
     }
 
+    if (selectedOperation === "remove") {
+      return true
+    }
+
     return selectedProperty.parameters.every((parameter) => {
       if (!parameter.required) {
         return true
@@ -52,7 +64,7 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
 
       return value !== undefined && value !== ""
     })
-  }, [selectedProperty, parameterValues])
+  }, [selectedProperty, selectedOperation, parameterValues])
 
   function handlePropertyChange(propertyId: string | null) {
     setSelectedPropertyId(propertyId ?? "")
@@ -73,17 +85,45 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
 
     const propertyConfig: ItemPropertyConfig = {
       propertyId: selectedProperty.id,
-      values: parameterValues,
+      operation: selectedOperation,
+      values: selectedOperation === "remove" ? {} : parameterValues,
     }
 
     onAddProperty(propertyConfig)
 
     setSelectedPropertyId("")
     setParameterValues({})
+    setSelectedOperation("add")
   }
 
   return (
     <div className="space-y-4">
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Aktion</label>
+
+        <Select
+          value={selectedOperation}
+          onValueChange={(value) => {
+            if (value === null) {
+              return
+            }
+
+            setSelectedOperation(value as PropertyOperation)
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+
+          <SelectContent>
+            {propertyOperations.map((operation) => (
+              <SelectItem key={operation.value} value={operation.value}>
+                {operation.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       <div className="space-y-2">
         <label className="text-sm font-medium">Eigenschaft</label>
 
@@ -102,7 +142,7 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
         </Select>
       </div>
 
-      {selectedProperty && (
+      {selectedProperty && selectedOperation !== "remove" && (
         <div className="space-y-4">
           {selectedProperty.parameters.map((parameter) => (
             <div key={parameter.id} className="space-y-2">
