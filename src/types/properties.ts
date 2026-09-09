@@ -5,6 +5,7 @@ export type PropertyParameterType = "number" | "select" | "boolean"
 export type PropertyParameterOption = {
   label: string
   value: string | number
+  nwscriptValue?: string
 }
 
 export type PropertyParameter = {
@@ -23,10 +24,9 @@ export type PropertyParameter = {
 export type ItemPropertyDefinition = {
   id: string
   name: string
-
   allowedSlots: ItemSlot[]
-
   parameters: PropertyParameter[]
+  nwscript: ItemPropertyNwScript
 }
 
 export type PropertyValue = string | number | boolean
@@ -38,3 +38,8 @@ export type ItemPropertyConfig = {
 }
 
 export type PropertyOperation = "add" | "replace" | "remove"
+
+export type ItemPropertyNwScript = {
+  propertyType: string
+  functionName?: string
+}

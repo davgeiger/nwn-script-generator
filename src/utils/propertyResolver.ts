@@ -47,3 +47,20 @@ export function getPropertyValues(
     value: getParameterLabel(parameter, values[parameter.id]),
   }))
 }
+
+export function getParameterNwScriptValue(
+  parameter: PropertyParameter,
+  value: PropertyValue
+): string {
+  if (parameter.type === "select") {
+    const option = parameter.options?.find((option) => option.value === value)
+
+    return option?.nwscriptValue ?? String(value)
+  }
+
+  if (parameter.type === "boolean") {
+    return value ? "TRUE" : "FALSE"
+  }
+
+  return String(value)
+}

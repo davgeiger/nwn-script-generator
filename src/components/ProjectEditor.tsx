@@ -7,6 +7,8 @@ import type { LevelItem } from "@/types/items"
 import { TierListEditor } from "@/components/TierListEditor"
 import { ItemListEditor } from "@/components/ItemListEditor"
 
+import { generateScript } from "@/generators/scriptGenerator"
+
 const initialConfig: ProjectConfig = {
   items: initialItems,
   tiers: [
@@ -21,6 +23,8 @@ const initialConfig: ProjectConfig = {
 
 export function ProjectEditor() {
   const [config, setConfig] = useState<ProjectConfig>(initialConfig)
+
+  console.log(generateScript(config))
 
   function handleItemChange(updatedItem: LevelItem) {
     setConfig((currentConfig) => ({
