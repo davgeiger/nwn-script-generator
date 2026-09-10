@@ -4,6 +4,7 @@ import { itemProperties } from "@/data/itemProperties"
 import {
   getParameterLabel,
   getPropertyOperationLabel,
+  isParameterVisible,
 } from "@/utils/propertyResolver"
 import type { LevelItem } from "@/types/items"
 
@@ -129,12 +130,18 @@ export function TierEditor({ tier, items, onChange }: TierEditorProps) {
                   property.operation
                 )
 
-                const displayParameters =
-                  property.operation === "remove"
-                    ? definition.parameters.filter((parameter) =>
-                        definition.keyParameters?.includes(parameter.id)
-                      )
-                    : definition.parameters
+                const displayParameters = definition.parameters.filter(
+                  (parameter) => {
+                    if (
+                      property.operation === "remove" &&
+                      !definition.keyParameters?.includes(parameter.id)
+                    ) {
+                      return false
+                    }
+
+                    return isParameterVisible(parameter, property.values)
+                  }
+                )
 
                 return (
                   <div key={propertyIndex} className="rounded-md border p-3">

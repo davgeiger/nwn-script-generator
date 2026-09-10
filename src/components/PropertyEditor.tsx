@@ -16,8 +16,10 @@ import { propertyOperations } from "@/data/propertyOperations"
 import type {
   ItemPropertyConfig,
   PropertyOperation,
+  PropertyParameter,
   PropertyValue,
 } from "@/types/properties"
+import { isParameterVisible } from "@/utils/propertyResolver"
 
 type PropertyEditorProps = {
   item: LevelItem
@@ -47,35 +49,70 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
   )
 
   const visibleParameters = selectedProperty
-    ? selectedOperation === "remove"
-      ? selectedProperty.parameters.filter((parameter) =>
-          selectedProperty.keyParameters?.includes(parameter.id)
-        )
-      : selectedProperty.parameters
+    ? selectedProperty.parameters.filter((parameter) => {
+        if (
+          selectedOperation === "remove" &&
+          !selectedProperty.keyParameters?.includes(parameter.id)
+        ) {
+          return false
+        }
+
+        return isParameterVisible(parameter, parameterValues)
+      })
     : []
 
-  const isPropertyValid = useMemo(() => {
-    if (!selectedProperty) {
+  const isPropertyValid =
+    selectedProperty !== undefined &&
+    visibleParameters.every((parameter) => {
+      const value = parameterValues[parameter.id]
+
+      if (parameter.required && (value === undefined || value === "")) {
+        return false
+      }
+
+      if (parameter.type === "number" && value !== undefined && value !== "") {
+        const numberValue = Number(value)
+
+        if (Number.isNaN(numberValue)) {
+          return false
+        }
+
+        if (parameter.min !== undefined && numberValue < parameter.min) {
+          return false
+        }
+
+        if (parameter.max !== undefined && numberValue > parameter.max) {
+          return false
+        }
+      }
+
+      return true
+    })
+
+  function isNumberParameterInvalid(
+    parameter: PropertyParameter,
+    value: PropertyValue | undefined
+  ): boolean {
+    if (parameter.type !== "number" || value === undefined || value === "") {
       return false
     }
 
-    const parametersToValidate =
-      selectedOperation === "remove"
-        ? selectedProperty.parameters.filter((parameter) =>
-            selectedProperty.keyParameters?.includes(parameter.id)
-          )
-        : selectedProperty.parameters
+    const numberValue = Number(value)
 
-    return parametersToValidate.every((parameter) => {
-      if (!parameter.required) {
-        return true
-      }
+    if (Number.isNaN(numberValue)) {
+      return true
+    }
 
-      const value = parameterValues[parameter.id]
+    if (parameter.min !== undefined && numberValue < parameter.min) {
+      return true
+    }
 
-      return value !== undefined && value !== ""
-    })
-  }, [selectedProperty, selectedOperation, parameterValues])
+    if (parameter.max !== undefined && numberValue > parameter.max) {
+      return true
+    }
+
+    return false
+  }
 
   function handlePropertyChange(propertyId: string | null) {
     setSelectedPropertyId(propertyId ?? "")
@@ -155,73 +192,96 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
 
       {selectedProperty && (
         <div className="space-y-4">
-          {visibleParameters.map((parameter) => (
-            <div key={parameter.id} className="space-y-2">
-              <label className="text-sm font-medium">{parameter.label}</label>
+          {visibleParameters.map((parameter) => {
+            const isInvalid = isNumberParameterInvalid(
+              parameter,
+              parameterValues[parameter.id]
+            )
 
-              {parameter.type === "number" && (
-                <Input
-                  type="number"
-                  min={parameter.min}
-                  max={parameter.max}
-                  value={
-                    parameterValues[parameter.id] !== undefined
-                      ? String(parameterValues[parameter.id])
-                      : ""
-                  }
-                  onChange={(event) => {
-                    const value = event.target.value
+            return (
+              <div key={parameter.id} className="space-y-2">
+                <label className="text-sm font-medium">{parameter.label}</label>
 
-                    if (value === "") {
-                      setParameterValues((currentValues) => {
-                        const nextValues = { ...currentValues }
-
-                        delete nextValues[parameter.id]
-
-                        return nextValues
-                      })
-
-                      return
+                {parameter.type === "number" && (
+                  <Input
+                    type="number"
+                    min={parameter.min}
+                    max={parameter.max}
+                    value={
+                      parameterValues[parameter.id] !== undefined
+                        ? String(parameterValues[parameter.id])
+                        : ""
                     }
+                    onChange={(event) => {
+                      const value = event.target.value
 
-                    handleParameterChange(parameter.id, Number(value))
-                  }}
-                />
-              )}
+                      if (value === "") {
+                        setParameterValues((currentValues) => {
+                          const nextValues = { ...currentValues }
 
-              {parameter.type === "select" && (
-                <Select
-                  value={
-                    parameterValues[parameter.id] !== undefined
-                      ? String(parameterValues[parameter.id])
-                      : ""
-                  }
-                  onValueChange={(value) => {
-                    if (value === null) {
-                      return
+                          delete nextValues[parameter.id]
+
+                          return nextValues
+                        })
+
+                        return
+                      }
+
+                      handleParameterChange(parameter.id, Number(value))
+                    }}
+                    className={isInvalid ? "text-red-500" : undefined}
+                  />
+                )}
+
+                {parameter.type === "number" &&
+                  (parameter.min !== undefined ||
+                    parameter.max !== undefined) && (
+                    <p
+                      className={`text-xs ${
+                        isInvalid ? "text-red-500" : "text-muted-foreground"
+                      }`}
+                    >
+                      Gültiger Bereich: {parameter.min ?? "–"}–
+                      {parameter.max ?? "–"}
+                    </p>
+                  )}
+
+                {parameter.type === "select" && (
+                  <Select
+                    value={
+                      parameterValues[parameter.id] !== undefined
+                        ? String(parameterValues[parameter.id])
+                        : ""
                     }
+                    onValueChange={(value) => {
+                      if (value === null) {
+                        return
+                      }
 
-                    handleParameterChange(parameter.id, value)
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={`${parameter.label} auswählen`} />
-                  </SelectTrigger>
+                      handleParameterChange(parameter.id, value)
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={`${parameter.label} auswählen`}
+                      />
+                    </SelectTrigger>
 
-                  <SelectContent>
-                    {parameter.options?.map((option) => (
-                      <SelectItem
-                        key={String(option.value)}
-                        value={String(option.value)}
-                      >
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
-          ))}
+                    <SelectContent>
+                      {parameter.options?.map((option) => (
+                        <SelectItem
+                          key={String(option.value)}
+                          value={String(option.value)}
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            )
+          })}
         </div>
       )}
 

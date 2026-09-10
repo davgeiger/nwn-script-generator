@@ -1,5 +1,7 @@
 import type { ItemSlot } from "@/types/items"
 
+export type PropertyValue = string | number | boolean
+
 export type PropertyParameterType = "number" | "select" | "boolean"
 
 export type PropertyParameterOption = {
@@ -8,17 +10,30 @@ export type PropertyParameterOption = {
   nwscriptValue?: string
 }
 
+export type PropertyParameterCondition = {
+  parameterId: string
+  values: PropertyValue[]
+}
+
 export type PropertyParameter = {
   id: string
   label: string
   type: PropertyParameterType
-
   required?: boolean
-
   min?: number
   max?: number
-
   options?: PropertyParameterOption[]
+  condition?: PropertyParameterCondition
+}
+
+export type ItemPropertyNwScript = {
+  propertyType: string
+  functionName?: string
+  parameterOrder?: string[]
+  functionByValue?: {
+    parameterId: string
+    values: Record<string, string>
+  }
 }
 
 export type ItemPropertyDefinition = {
@@ -30,17 +45,10 @@ export type ItemPropertyDefinition = {
   nwscript: ItemPropertyNwScript
 }
 
-export type PropertyValue = string | number | boolean
+export type PropertyOperation = "add" | "replace" | "remove"
 
 export type ItemPropertyConfig = {
   propertyId: string
   operation: PropertyOperation
   values: Record<string, PropertyValue>
-}
-
-export type PropertyOperation = "add" | "replace" | "remove"
-
-export type ItemPropertyNwScript = {
-  propertyType: string
-  functionName?: string
 }

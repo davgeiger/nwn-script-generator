@@ -1,6 +1,9 @@
 import { itemProperties } from "@/data/itemProperties"
 import type { ItemPropertyConfig } from "@/types/properties"
-import { getParameterNwScriptValue } from "@/utils/propertyResolver"
+import {
+  getParameterNwScriptValue,
+  isParameterVisible,
+} from "@/utils/propertyResolver"
 
 export function generatePropertyExpression(
   config: ItemPropertyConfig
@@ -13,11 +16,42 @@ export function generatePropertyExpression(
     return undefined
   }
 
-  if (!definition.nwscript.functionName) {
+  let functionName = definition.nwscript.functionName
+
+  const functionByValue = definition.nwscript.functionByValue
+
+  if (functionByValue) {
+    const parameterValue = config.values[functionByValue.parameterId]
+
+    if (parameterValue !== undefined) {
+      functionName = functionByValue.values[String(parameterValue)]
+    }
+  }
+
+  if (!functionName) {
     return undefined
   }
 
-  const argumentsList = definition.parameters.map((parameter) => {
+  const visibleParameters = definition.parameters.filter((parameter) =>
+    isParameterVisible(parameter, config.values)
+  )
+
+  const orderedParameters = definition.nwscript.parameterOrder
+    ? [...visibleParameters].sort((a, b) => {
+        const order = definition.nwscript.parameterOrder!
+
+        const indexA = order.indexOf(a.id)
+        const indexB = order.indexOf(b.id)
+
+        const orderA = indexA === -1 ? Number.MAX_SAFE_INTEGER : indexA
+
+        const orderB = indexB === -1 ? Number.MAX_SAFE_INTEGER : indexB
+
+        return orderA - orderB
+      })
+    : visibleParameters
+
+  const argumentsList = orderedParameters.map((parameter) => {
     const value = config.values[parameter.id]
 
     if (value === undefined) {
@@ -31,7 +65,7 @@ export function generatePropertyExpression(
     return undefined
   }
 
-  return `${definition.nwscript.functionName}(${argumentsList.join(", ")})`
+  return `${functionName}(${argumentsList.join(", ")})`
 }
 
 export function generatePropertyStatement(

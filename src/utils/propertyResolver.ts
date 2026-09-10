@@ -28,7 +28,9 @@ export function getParameterLabel(
   value: PropertyValue
 ): string {
   if (parameter.type === "select") {
-    const option = parameter.options?.find((option) => option.value === value)
+    const option = parameter.options?.find(
+      (option) => String(option.value) === String(value)
+    )
 
     return option?.label ?? String(value)
   }
@@ -56,7 +58,9 @@ export function getParameterNwScriptValue(
   value: PropertyValue
 ): string {
   if (parameter.type === "select") {
-    const option = parameter.options?.find((option) => option.value === value)
+    const option = parameter.options?.find(
+      (option) => String(option.value) === String(value)
+    )
 
     return option?.nwscriptValue ?? String(value)
   }
@@ -86,4 +90,17 @@ export function getPropertyKey(config: ItemPropertyConfig): string {
   )
 
   return [config.propertyId, ...keyValues].join(":")
+}
+
+export function isParameterVisible(
+  parameter: PropertyParameter,
+  values: Record<string, PropertyValue>
+): boolean {
+  if (!parameter.condition) {
+    return true
+  }
+
+  const currentValue = values[parameter.condition.parameterId]
+
+  return parameter.condition.values.includes(currentValue)
 }
