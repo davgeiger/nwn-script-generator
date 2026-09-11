@@ -20,6 +20,7 @@ import type {
   PropertyValue,
 } from "@/types/properties"
 import { isParameterVisible } from "@/utils/propertyResolver"
+import { SearchablePropertySelect } from "./SearchablePropertySelect"
 
 type PropertyEditorProps = {
   item: LevelItem
@@ -246,39 +247,50 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
                     </p>
                   )}
 
-                {parameter.type === "select" && (
-                  <Select
-                    value={
-                      parameterValues[parameter.id] !== undefined
-                        ? String(parameterValues[parameter.id])
-                        : ""
-                    }
-                    onValueChange={(value) => {
-                      if (value === null) {
-                        return
+                {parameter.type === "select" &&
+                  (parameter.searchable ? (
+                    <SearchablePropertySelect
+                      options={parameter.options ?? []}
+                      value={parameterValues[parameter.id]}
+                      placeholder={`${parameter.label} auswählen`}
+                      searchPlaceholder={`${parameter.label} suchen...`}
+                      onChange={(value) =>
+                        handleParameterChange(parameter.id, value)
                       }
+                    />
+                  ) : (
+                    <Select
+                      value={
+                        parameterValues[parameter.id] !== undefined
+                          ? String(parameterValues[parameter.id])
+                          : ""
+                      }
+                      onValueChange={(value) => {
+                        if (value === null) {
+                          return
+                        }
 
-                      handleParameterChange(parameter.id, value)
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder={`${parameter.label} auswählen`}
-                      />
-                    </SelectTrigger>
+                        handleParameterChange(parameter.id, value)
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue
+                          placeholder={`${parameter.label} auswählen`}
+                        />
+                      </SelectTrigger>
 
-                    <SelectContent>
-                      {parameter.options?.map((option) => (
-                        <SelectItem
-                          key={String(option.value)}
-                          value={String(option.value)}
-                        >
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
+                      <SelectContent>
+                        {parameter.options?.map((option) => (
+                          <SelectItem
+                            key={String(option.value)}
+                            value={String(option.value)}
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ))}
               </div>
             )
           })}

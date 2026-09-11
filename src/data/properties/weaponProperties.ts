@@ -3,7 +3,11 @@ import {
   alignmentGroupOptions,
   alignmentOptions,
   damageBonusOptions,
+  damageTypeOptions,
+  itemVisualOptions,
+  physicalDamageTypeOptions,
   racialTypeOptions,
+  unlimitedAmmoOptions,
 } from "@/data/propertyOptions"
 
 export const weaponProperties: ItemPropertyDefinition[] = [
@@ -40,48 +44,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
         label: "Schadensart",
         type: "select",
         required: true,
-        options: [
-          {
-            label: "Säure",
-            value: "acid",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_ACID",
-          },
-          {
-            label: "Kälte",
-            value: "cold",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_COLD",
-          },
-          {
-            label: "Göttlich",
-            value: "divine",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_DIVINE",
-          },
-          {
-            label: "Elektrisch",
-            value: "electrical",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_ELECTRICAL",
-          },
-          {
-            label: "Feuer",
-            value: "fire",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_FIRE",
-          },
-          {
-            label: "Negativ",
-            value: "negative",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_NEGATIVE",
-          },
-          {
-            label: "Positiv",
-            value: "positive",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_POSITIVE",
-          },
-          {
-            label: "Schall",
-            value: "sonic",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_SONIC",
-          },
-        ],
+        options: damageTypeOptions,
       },
       {
         id: "damage",
@@ -233,6 +196,322 @@ export const weaponProperties: ItemPropertyDefinition[] = [
       propertyType: "ITEM_PROPERTY_ATTACK_BONUS_VS_SPECIFIC_ALIGNMENT",
       functionName: "ItemPropertyAttackBonusVsSAlign",
       parameterOrder: ["alignment", "bonus"],
+    },
+  },
+  // Vampiric Regeneration
+  {
+    id: "vampiricRegeneration",
+    name: "Vampirische Regeneration",
+    allowedSlots: ["weapon"],
+    parameters: [
+      {
+        id: "amount",
+        label: "Regeneration",
+        type: "number",
+        required: true,
+        min: 1,
+        max: 20,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_REGENERATION_VAMPIRIC",
+      functionName: "ItemPropertyVampiricRegeneration",
+      parameterOrder: ["amount"],
+    },
+  },
+  // Damage Bonus vs Alignment Group
+  {
+    id: "damageBonusVsAlignmentGroup",
+    name: "Schadensbonus gegen Gesinnungsgruppe",
+    allowedSlots: ["weapon"],
+    keyParameters: ["alignmentGroup", "damageType"],
+    parameters: [
+      {
+        id: "alignmentGroup",
+        label: "Gesinnungsgruppe",
+        type: "select",
+        required: true,
+        options: alignmentGroupOptions,
+      },
+      {
+        id: "damageType",
+        label: "Schadensart",
+        type: "select",
+        required: true,
+        options: damageTypeOptions,
+      },
+      {
+        id: "damage",
+        label: "Schaden",
+        type: "select",
+        required: true,
+        options: damageBonusOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_DAMAGE_BONUS_VS_ALIGNMENT_GROUP",
+      functionName: "ItemPropertyDamageBonusVsAlign",
+      parameterOrder: ["alignmentGroup", "damageType", "damage"],
+    },
+  },
+  // Damage Bonus vs race
+  {
+    id: "damageBonusVsRace",
+    name: "Schadensbonus gegen Rasse",
+    allowedSlots: ["weapon"],
+    keyParameters: ["race", "damageType"],
+    parameters: [
+      {
+        id: "race",
+        label: "Rasse",
+        type: "select",
+        required: true,
+        options: racialTypeOptions,
+      },
+      {
+        id: "damageType",
+        label: "Schadensart",
+        type: "select",
+        required: true,
+        options: damageTypeOptions,
+      },
+      {
+        id: "damage",
+        label: "Schaden",
+        type: "select",
+        required: true,
+        options: damageBonusOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_DAMAGE_BONUS_VS_RACIAL_GROUP",
+      functionName: "ItemPropertyDamageBonusVsRace",
+      parameterOrder: ["race", "damageType", "damage"],
+    },
+  },
+  // Damage Bonus vs Alignment
+  {
+    id: "damageBonusVsAlignment",
+    name: "Schadensbonus gegen Gesinnung",
+    allowedSlots: ["weapon"],
+    keyParameters: ["alignment", "damageType"],
+    parameters: [
+      {
+        id: "alignment",
+        label: "Gesinnung",
+        type: "select",
+        required: true,
+        options: alignmentOptions,
+      },
+      {
+        id: "damageType",
+        label: "Schadensart",
+        type: "select",
+        required: true,
+        options: damageTypeOptions,
+      },
+      {
+        id: "damage",
+        label: "Schaden",
+        type: "select",
+        required: true,
+        options: damageBonusOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_DAMAGE_BONUS_VS_SPECIFIC_ALIGNMENT",
+      functionName: "ItemPropertyDamageBonusVsSAlign",
+      parameterOrder: ["alignment", "damageType", "damage"],
+    },
+  },
+  {
+    id: "enhancementBonusVsRace",
+    name: "Verbesserungsbonus gegen Rasse",
+    allowedSlots: ["weapon"],
+    keyParameters: ["race"],
+    parameters: [
+      {
+        id: "race",
+        label: "Rasse",
+        type: "select",
+        required: true,
+        options: racialTypeOptions,
+      },
+      {
+        id: "bonus",
+        label: "Verbesserungsbonus",
+        type: "number",
+        required: true,
+        min: 1,
+        max: 20,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_ENHANCEMENT_BONUS_VS_RACIAL_GROUP",
+      functionName: "ItemPropertyEnhancementBonusVsRace",
+      parameterOrder: ["race", "bonus"],
+    },
+  },
+  {
+    id: "enhancementBonusVsAlignmentGroup",
+    name: "Verbesserungsbonus gegen Gesinnungsgruppe",
+    allowedSlots: ["weapon"],
+    keyParameters: ["alignmentGroup"],
+    parameters: [
+      {
+        id: "alignmentGroup",
+        label: "Gesinnungsgruppe",
+        type: "select",
+        required: true,
+        options: alignmentGroupOptions,
+      },
+      {
+        id: "bonus",
+        label: "Verbesserungsbonus",
+        type: "number",
+        required: true,
+        min: 1,
+        max: 20,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_ENHANCEMENT_BONUS_VS_ALIGNMENT_GROUP",
+      functionName: "ItemPropertyEnhancementBonusVsAlign",
+      parameterOrder: ["alignmentGroup", "bonus"],
+    },
+  },
+  {
+    id: "enhancementBonusVsAlignment",
+    name: "Verbesserungsbonus gegen Gesinnung",
+    allowedSlots: ["weapon"],
+    keyParameters: ["alignment"],
+    parameters: [
+      {
+        id: "alignment",
+        label: "Gesinnung",
+        type: "select",
+        required: true,
+        options: alignmentOptions,
+      },
+      {
+        id: "bonus",
+        label: "Verbesserungsbonus",
+        type: "number",
+        required: true,
+        min: 1,
+        max: 20,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_ENHANCEMENT_BONUS_VS_SPECIFIC_ALIGN",
+      functionName: "ItemPropertyEnhancementBonusVsSAlign",
+      parameterOrder: ["alignment", "bonus"],
+    },
+  },
+  {
+    id: "mighty",
+    name: "Mighty",
+    allowedSlots: ["weapon"],
+    parameters: [
+      {
+        id: "bonus",
+        label: "Stärke-Bonus",
+        type: "number",
+        required: true,
+        min: 1,
+        max: 20,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_MAXRANGE_STRENGTH_MOD",
+      functionName: "ItemPropertyMaxRangeStrengthMod",
+      parameterOrder: ["bonus"],
+    },
+  },
+  {
+    id: "unlimitedAmmo",
+    name: "Unbegrenzte Munition",
+    allowedSlots: ["weapon"],
+    parameters: [
+      {
+        id: "ammo",
+        label: "Munition",
+        type: "select",
+        required: true,
+        options: unlimitedAmmoOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_UNLIMITED_AMMUNITION",
+      functionName: "ItemPropertyUnlimitedAmmo",
+      parameterOrder: ["ammo"],
+    },
+  },
+  {
+    id: "visualEffect",
+    name: "Visueller Waffeneffekt",
+    allowedSlots: ["weapon"],
+    parameters: [
+      {
+        id: "effect",
+        label: "Effekt",
+        type: "select",
+        required: true,
+        options: itemVisualOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_VISUALEFFECT",
+      functionName: "ItemPropertyVisualEffect",
+      parameterOrder: ["effect"],
+    },
+  },
+  {
+    id: "holyAvenger",
+    name: "Heiliger Rächer",
+    allowedSlots: ["weapon"],
+    parameters: [],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_HOLY_AVENGER",
+      functionName: "ItemPropertyHolyAvenger",
+    },
+  },
+  {
+    id: "extraMeleeDamageType",
+    name: "Zusätzliche Nahkampf-Schadensart",
+    allowedSlots: ["weapon"],
+    parameters: [
+      {
+        id: "damageType",
+        label: "Schadensart",
+        type: "select",
+        required: true,
+        options: physicalDamageTypeOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_EXTRA_MELEE_DAMAGE_TYPE",
+      functionName: "ItemPropertyExtraMeleeDamageType",
+      parameterOrder: ["damageType"],
+    },
+  },
+  {
+    id: "extraRangedDamageType",
+    name: "Zusätzliche Fernkampf-Schadensart",
+    allowedSlots: ["weapon"],
+    parameters: [
+      {
+        id: "damageType",
+        label: "Schadensart",
+        type: "select",
+        required: true,
+        options: physicalDamageTypeOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_EXTRA_RANGED_DAMAGE_TYPE",
+      functionName: "ItemPropertyExtraRangeDamageType",
+      parameterOrder: ["damageType"],
     },
   },
 ]

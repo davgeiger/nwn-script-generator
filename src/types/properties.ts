@@ -24,6 +24,8 @@ export type PropertyParameter = {
   max?: number
   options?: PropertyParameterOption[]
   condition?: PropertyParameterCondition
+
+  searchable?: boolean
 }
 
 export type ItemPropertyNwScript = {

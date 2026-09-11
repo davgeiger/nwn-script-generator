@@ -2,6 +2,8 @@ import type { ItemPropertyDefinition } from "@/types/properties"
 import {
   alignmentGroupOptions,
   alignmentOptions,
+  damageTypeOptions,
+  damageVulnerabilityOptions,
   physicalDamageTypeOptions,
   racialTypeOptions,
 } from "@/data/propertyOptions"
@@ -283,33 +285,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
         label: "Schadensart",
         type: "select",
         required: true,
-        options: [
-          {
-            label: "Säure",
-            value: "acid",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_ACID",
-          },
-          {
-            label: "Kälte",
-            value: "cold",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_COLD",
-          },
-          {
-            label: "Elektrisch",
-            value: "electrical",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_ELECTRICAL",
-          },
-          {
-            label: "Feuer",
-            value: "fire",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_FIRE",
-          },
-          {
-            label: "Schall",
-            value: "sonic",
-            nwscriptValue: "IP_CONST_DAMAGETYPE_SONIC",
-          },
-        ],
+        options: damageTypeOptions,
       },
       {
         id: "amount",
@@ -847,6 +823,158 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
       propertyType: "ITEM_PROPERTY_DAMAGE_REDUCTION",
       functionName: "ItemPropertyDamageReduction",
       parameterOrder: ["enhancement", "soak"],
+    },
+  },
+  // Damage Vulnerability
+  {
+    id: "damageVulnerability",
+    name: "Schadensverwundbarkeit",
+    allowedSlots: [
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    keyParameters: ["damageType"],
+    parameters: [
+      {
+        id: "damageType",
+        label: "Schadensart",
+        type: "select",
+        required: true,
+        options: damageTypeOptions,
+      },
+      {
+        id: "vulnerability",
+        label: "Verwundbarkeit",
+        type: "select",
+        required: true,
+        options: damageVulnerabilityOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_DAMAGE_VULNERABILITY",
+      functionName: "ItemPropertyDamageVulnerability",
+      parameterOrder: ["damageType", "vulnerability"],
+    },
+  },
+  {
+    id: "regeneration",
+    name: "Regeneration",
+    allowedSlots: [
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    parameters: [
+      {
+        id: "amount",
+        label: "Regeneration",
+        type: "number",
+        required: true,
+        min: 1,
+        max: 20,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_REGENERATION",
+      functionName: "ItemPropertyRegeneration",
+      parameterOrder: ["amount"],
+    },
+  },
+  // Freedom of Movement
+  {
+    id: "freedomOfMovement",
+    name: "Bewegungsfreiheit",
+    allowedSlots: [
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    parameters: [],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_FREEDOM_OF_MOVEMENT",
+      functionName: "ItemPropertyFreeAction",
+    },
+  },
+  // Improved Evasion
+  {
+    id: "improvedEvasion",
+    name: "Verbessertes Entrinnen",
+    allowedSlots: [
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    parameters: [],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_IMPROVED_EVASION",
+      functionName: "ItemPropertyImprovedEvasion",
+    },
+  },
+  // Darkvision
+  {
+    id: "darkvision",
+    name: "Dunkelsicht",
+    allowedSlots: [
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    parameters: [],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_DARKVISION",
+      functionName: "ItemPropertyDarkvision",
+    },
+  },
+  // True Seeing
+  {
+    id: "trueSeeing",
+    name: "Wahrer Blick",
+    allowedSlots: [
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    parameters: [],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_TRUE_SEEING",
+      functionName: "ItemPropertyTrueSeeing",
     },
   },
 ]
