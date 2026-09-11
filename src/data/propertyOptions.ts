@@ -138,7 +138,7 @@ export const alignmentGroupOptions: PropertyParameterOption[] = [
   },
 ]
 
-export const alignmentOptions: PropertyParameterOption[] = [
+export const alignmentOptions: PropertyParameterOption[] = sortOptionsByLabel([
   {
     label: "Rechtschaffen gut",
     value: "lawfulGood",
@@ -184,9 +184,9 @@ export const alignmentOptions: PropertyParameterOption[] = [
     value: "chaoticEvil",
     nwscriptValue: "IP_CONST_ALIGNMENT_CE",
   },
-]
+])
 
-export const racialTypeOptions: PropertyParameterOption[] = [
+export const racialTypeOptions: PropertyParameterOption[] = sortOptionsByLabel([
   {
     label: "Zwerg",
     value: "dwarf",
@@ -307,7 +307,7 @@ export const racialTypeOptions: PropertyParameterOption[] = [
     value: "vermin",
     nwscriptValue: "IP_CONST_RACIALTYPE_VERMIN",
   },
-]
+])
 
 export const physicalDamageTypeOptions: PropertyParameterOption[] = [
   {
@@ -327,48 +327,50 @@ export const physicalDamageTypeOptions: PropertyParameterOption[] = [
   },
 ]
 
-export const spellSchoolOptions: PropertyParameterOption[] = [
-  {
-    label: "Bannzauber",
-    value: "abjuration",
-    nwscriptValue: "IP_CONST_SPELLSCHOOL_ABJURATION",
-  },
-  {
-    label: "Beschwörung",
-    value: "conjuration",
-    nwscriptValue: "IP_CONST_SPELLSCHOOL_CONJURATION",
-  },
-  {
-    label: "Erkenntnismagie",
-    value: "divination",
-    nwscriptValue: "IP_CONST_SPELLSCHOOL_DIVINATION",
-  },
-  {
-    label: "Verzauberung",
-    value: "enchantment",
-    nwscriptValue: "IP_CONST_SPELLSCHOOL_ENCHANTMENT",
-  },
-  {
-    label: "Hervorrufung",
-    value: "evocation",
-    nwscriptValue: "IP_CONST_SPELLSCHOOL_EVOCATION",
-  },
-  {
-    label: "Illusion",
-    value: "illusion",
-    nwscriptValue: "IP_CONST_SPELLSCHOOL_ILLUSION",
-  },
-  {
-    label: "Nekromantie",
-    value: "necromancy",
-    nwscriptValue: "IP_CONST_SPELLSCHOOL_NECROMANCY",
-  },
-  {
-    label: "Verwandlung",
-    value: "transmutation",
-    nwscriptValue: "IP_CONST_SPELLSCHOOL_TRANSMUTATION",
-  },
-]
+export const spellSchoolOptions: PropertyParameterOption[] = sortOptionsByLabel(
+  [
+    {
+      label: "Bannzauber",
+      value: "abjuration",
+      nwscriptValue: "IP_CONST_SPELLSCHOOL_ABJURATION",
+    },
+    {
+      label: "Beschwörung",
+      value: "conjuration",
+      nwscriptValue: "IP_CONST_SPELLSCHOOL_CONJURATION",
+    },
+    {
+      label: "Erkenntnismagie",
+      value: "divination",
+      nwscriptValue: "IP_CONST_SPELLSCHOOL_DIVINATION",
+    },
+    {
+      label: "Verzauberung",
+      value: "enchantment",
+      nwscriptValue: "IP_CONST_SPELLSCHOOL_ENCHANTMENT",
+    },
+    {
+      label: "Hervorrufung",
+      value: "evocation",
+      nwscriptValue: "IP_CONST_SPELLSCHOOL_EVOCATION",
+    },
+    {
+      label: "Illusion",
+      value: "illusion",
+      nwscriptValue: "IP_CONST_SPELLSCHOOL_ILLUSION",
+    },
+    {
+      label: "Nekromantie",
+      value: "necromancy",
+      nwscriptValue: "IP_CONST_SPELLSCHOOL_NECROMANCY",
+    },
+    {
+      label: "Verwandlung",
+      value: "transmutation",
+      nwscriptValue: "IP_CONST_SPELLSCHOOL_TRANSMUTATION",
+    },
+  ]
+)
 
 export const spellImmunityOptions: PropertyParameterOption[] = [
   {
@@ -1168,7 +1170,7 @@ export const damageTypeOptions: PropertyParameterOption[] = [
   },
 ]
 
-export const bonusFeatOptions: PropertyParameterOption[] = [
+export const bonusFeatOptions: PropertyParameterOption[] = sortOptionsByLabel([
   {
     label: "Wachsamkeit",
     value: "alertness",
@@ -1366,7 +1368,7 @@ export const bonusFeatOptions: PropertyParameterOption[] = [
     value: "whirlwind",
     nwscriptValue: "IP_CONST_FEAT_WHIRLWIND",
   },
-]
+])
 
 export const unlimitedAmmoOptions: PropertyParameterOption[] = [
   {
@@ -1596,7 +1598,7 @@ export const spellClassOptions: PropertyParameterOption[] = [
   },
 ]
 
-export const classOptions: PropertyParameterOption[] = [
+export const classOptions: PropertyParameterOption[] = sortOptionsByLabel([
   {
     label: "Barbar",
     value: "barbarian",
@@ -1689,7 +1691,7 @@ export const classOptions: PropertyParameterOption[] = [
     value: "purpleDragonKnight",
     nwscriptValue: "CLASS_TYPE_PURPLE_DRAGON_KNIGHT",
   },
-]
+])
 
 export const castSpellUsesOptions: PropertyParameterOption[] = [
   {
@@ -1796,3 +1798,9 @@ export const standardDamageTypeOptions: PropertyParameterOption[] = [
     nwscriptValue: "IP_CONST_DAMAGETYPE_SONIC",
   },
 ]
+
+export function sortOptionsByLabel(
+  options: PropertyParameterOption[]
+): PropertyParameterOption[] {
+  return [...options].sort((a, b) => a.label.localeCompare(b.label, "de"))
+}

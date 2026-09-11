@@ -1,6 +1,7 @@
 import type { PropertyParameterOption } from "@/types/properties"
+import { sortOptionsByLabel } from "../propertyOptions"
 
-export const castSpellOptions: PropertyParameterOption[] = [
+export const castSpellOptions: PropertyParameterOption[] = sortOptionsByLabel([
   {
     label: "Acid Fog (Stufe 11)",
     value: "acidFog11",
@@ -1886,4 +1887,4 @@ export const castSpellOptions: PropertyParameterOption[] = [
     value: "woundingWhispers9",
     nwscriptValue: "IP_CONST_CASTSPELL_WOUNDING_WHISPERS_9",
   },
-]
+])

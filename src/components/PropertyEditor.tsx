@@ -70,6 +70,12 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
     })
   }, [item.slot, item.weaponCategory, item.physicalDamageTypes])
 
+  const sortedAvailableProperties = useMemo(() => {
+    return [...availableProperties].sort((a, b) =>
+      a.name.localeCompare(b.name, "de")
+    )
+  }, [availableProperties])
+
   const selectedProperty = useMemo(
     () =>
       availableProperties.find(
@@ -180,6 +186,7 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
         <label className="text-sm font-medium">Aktion</label>
 
         <Select
+          items={propertyOperations}
           value={selectedOperation}
           onValueChange={(value) => {
             if (value === null) {
@@ -205,13 +212,20 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
       <div className="space-y-2">
         <label className="text-sm font-medium">Eigenschaft</label>
 
-        <Select value={selectedPropertyId} onValueChange={handlePropertyChange}>
+        <Select
+          items={sortedAvailableProperties.map((property) => ({
+            value: property.id,
+            label: property.name,
+          }))}
+          value={selectedPropertyId}
+          onValueChange={handlePropertyChange}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Eigenschaft auswählen" />
           </SelectTrigger>
 
           <SelectContent>
-            {availableProperties.map((property) => (
+            {sortedAvailableProperties.map((property) => (
               <SelectItem key={property.id} value={property.id}>
                 {property.name}
               </SelectItem>
@@ -289,6 +303,12 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
                     />
                   ) : (
                     <Select
+                      items={
+                        parameter.options?.map((option) => ({
+                          value: String(option.value),
+                          label: option.label,
+                        })) ?? []
+                      }
                       value={
                         parameterValues[parameter.id] !== undefined
                           ? String(parameterValues[parameter.id])
