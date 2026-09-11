@@ -8,6 +8,8 @@ export const initialItems: LevelItem[] = [
     tag: "LVL_WEAPON",
     slot: "weapon",
     grantLevel: 1,
+    weaponCategory: "melee",
+    physicalDamageTypes: ["piercing"],
   },
   {
     id: "shield",

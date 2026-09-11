@@ -1,4 +1,8 @@
-import type { ItemSlot } from "@/types/items"
+import type {
+  ItemSlot,
+  PhysicalDamageType,
+  WeaponCategory,
+} from "@/types/items"
 
 export type PropertyValue = string | number | boolean
 
@@ -42,6 +46,10 @@ export type ItemPropertyDefinition = {
   id: string
   name: string
   allowedSlots: ItemSlot[]
+
+  allowedWeaponCategories?: WeaponCategory[]
+  allowedPhysicalDamageTypes?: PhysicalDamageType[]
+
   parameters: PropertyParameter[]
   keyParameters?: string[]
   nwscript: ItemPropertyNwScript

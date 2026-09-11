@@ -10,11 +10,18 @@ export type ItemSlot =
   | "amulet"
   | "ring"
 
+export type WeaponCategory = "melee" | "ranged"
+
+export type PhysicalDamageType = "bludgeoning" | "piercing" | "slashing"
+
 export type LevelItem = {
   id: string
   name: string
-  resRef: string
-  tag: string
   slot: ItemSlot
+  tag: string
+  resRef: string
   grantLevel: number
+
+  weaponCategory?: WeaponCategory
+  physicalDamageTypes?: PhysicalDamageType[]
 }

@@ -1753,3 +1753,46 @@ export const castSpellUsesOptions: PropertyParameterOption[] = [
     nwscriptValue: "IP_CONST_CASTSPELL_NUMUSES_UNLIMITED_USE",
   },
 ]
+
+export const standardDamageTypeOptions: PropertyParameterOption[] = [
+  {
+    label: "Säure",
+    value: "acid",
+    nwscriptValue: "IP_CONST_DAMAGETYPE_ACID",
+  },
+  {
+    label: "Wucht",
+    value: "bludgeoning",
+    nwscriptValue: "IP_CONST_DAMAGETYPE_BLUDGEONING",
+  },
+  {
+    label: "Kälte",
+    value: "cold",
+    nwscriptValue: "IP_CONST_DAMAGETYPE_COLD",
+  },
+  {
+    label: "Elektrisch",
+    value: "electrical",
+    nwscriptValue: "IP_CONST_DAMAGETYPE_ELECTRICAL",
+  },
+  {
+    label: "Feuer",
+    value: "fire",
+    nwscriptValue: "IP_CONST_DAMAGETYPE_FIRE",
+  },
+  {
+    label: "Stich",
+    value: "piercing",
+    nwscriptValue: "IP_CONST_DAMAGETYPE_PIERCING",
+  },
+  {
+    label: "Hieb",
+    value: "slashing",
+    nwscriptValue: "IP_CONST_DAMAGETYPE_SLASHING",
+  },
+  {
+    label: "Schall",
+    value: "sonic",
+    nwscriptValue: "IP_CONST_DAMAGETYPE_SONIC",
+  },
+]

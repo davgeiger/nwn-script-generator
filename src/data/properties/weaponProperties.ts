@@ -7,6 +7,7 @@ import {
   itemVisualOptions,
   physicalDamageTypeOptions,
   racialTypeOptions,
+  standardDamageTypeOptions,
   unlimitedAmmoOptions,
 } from "@/data/propertyOptions"
 
@@ -16,6 +17,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "enhancementBonus",
     name: "Verbesserungsbonus",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["melee"],
     parameters: [
       {
         id: "bonus",
@@ -64,6 +66,8 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "keen",
     name: "Verbesserte kritische Trefferchance",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["melee"],
+    allowedPhysicalDamageTypes: ["piercing", "slashing"],
     parameters: [],
     nwscript: {
       propertyType: "ITEM_PROPERTY_KEEN",
@@ -238,7 +242,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
         label: "Schadensart",
         type: "select",
         required: true,
-        options: damageTypeOptions,
+        options: standardDamageTypeOptions,
       },
       {
         id: "damage",
@@ -273,7 +277,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
         label: "Schadensart",
         type: "select",
         required: true,
-        options: damageTypeOptions,
+        options: standardDamageTypeOptions,
       },
       {
         id: "damage",
@@ -308,7 +312,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
         label: "Schadensart",
         type: "select",
         required: true,
-        options: damageTypeOptions,
+        options: standardDamageTypeOptions,
       },
       {
         id: "damage",
@@ -328,6 +332,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "enhancementBonusVsRace",
     name: "Verbesserungsbonus gegen Rasse",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["melee"],
     keyParameters: ["race"],
     parameters: [
       {
@@ -356,6 +361,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "enhancementBonusVsAlignmentGroup",
     name: "Verbesserungsbonus gegen Gesinnungsgruppe",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["melee"],
     keyParameters: ["alignmentGroup"],
     parameters: [
       {
@@ -384,6 +390,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "enhancementBonusVsAlignment",
     name: "Verbesserungsbonus gegen Gesinnung",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["melee"],
     keyParameters: ["alignment"],
     parameters: [
       {
@@ -412,6 +419,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "mighty",
     name: "Mighty",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["ranged"],
     parameters: [
       {
         id: "bonus",
@@ -432,6 +440,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "unlimitedAmmo",
     name: "Unbegrenzte Munition",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["ranged"],
     parameters: [
       {
         id: "ammo",
@@ -451,6 +460,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "visualEffect",
     name: "Visueller Waffeneffekt",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["melee"],
     parameters: [
       {
         id: "effect",
@@ -480,6 +490,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "extraMeleeDamageType",
     name: "Zusätzliche Nahkampf-Schadensart",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["melee"],
     parameters: [
       {
         id: "damageType",
@@ -499,6 +510,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     id: "extraRangedDamageType",
     name: "Zusätzliche Fernkampf-Schadensart",
     allowedSlots: ["weapon"],
+    allowedWeaponCategories: ["ranged"],
     parameters: [
       {
         id: "damageType",

@@ -207,7 +207,19 @@ export const onHitProperties: ItemPropertyDefinition[] = [
         required: true,
         condition: {
           parameterId: "effect",
-          values: ["blindness", "confusion", "sleep", "slow", "stun"],
+          values: [
+            "blindness",
+            "confusion",
+            "daze",
+            "deafness",
+            "doom",
+            "fear",
+            "hold",
+            "silence",
+            "sleep",
+            "slow",
+            "stun",
+          ],
         },
         options: [
           {

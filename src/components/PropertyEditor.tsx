@@ -36,10 +36,39 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
     useState<PropertyOperation>("add")
 
   const availableProperties = useMemo(() => {
-    return itemProperties.filter((property) =>
-      property.allowedSlots.includes(item.slot)
-    )
-  }, [item.slot])
+    return itemProperties.filter((property) => {
+      if (!property.allowedSlots.includes(item.slot)) {
+        return false
+      }
+
+      if (property.allowedWeaponCategories) {
+        if (!item.weaponCategory) {
+          return false
+        }
+
+        if (!property.allowedWeaponCategories.includes(item.weaponCategory)) {
+          return false
+        }
+      }
+
+      if (property.allowedPhysicalDamageTypes) {
+        if (!item.physicalDamageTypes) {
+          return false
+        }
+
+        const hasMatchingDamageType = item.physicalDamageTypes.some(
+          (damageType) =>
+            property.allowedPhysicalDamageTypes?.includes(damageType)
+        )
+
+        if (!hasMatchingDamageType) {
+          return false
+        }
+      }
+
+      return true
+    })
+  }, [item.slot, item.weaponCategory, item.physicalDamageTypes])
 
   const selectedProperty = useMemo(
     () =>
