@@ -1,0 +1,329 @@
+import type { ItemPropertyDefinition } from "@/types/properties"
+
+import {
+  lightBrightnessOptions,
+  lightColorOptions,
+  reducedWeightOptions,
+} from "@/data/propertyOptions"
+
+export const miscProperties: ItemPropertyDefinition[] = [
+  // abilityBonus
+  {
+    id: "abilityBonus",
+    name: "Attributsbonus",
+    allowedSlots: [
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    keyParameters: ["ability"],
+    parameters: [
+      {
+        id: "ability",
+        label: "Attribut",
+        type: "select",
+        required: true,
+        options: [
+          {
+            label: "Stärke",
+            value: "strength",
+            nwscriptValue: "IP_CONST_ABILITY_STR",
+          },
+          {
+            label: "Geschicklichkeit",
+            value: "dexterity",
+            nwscriptValue: "IP_CONST_ABILITY_DEX",
+          },
+          {
+            label: "Konstitution",
+            value: "constitution",
+            nwscriptValue: "IP_CONST_ABILITY_CON",
+          },
+          {
+            label: "Intelligenz",
+            value: "intelligence",
+            nwscriptValue: "IP_CONST_ABILITY_INT",
+          },
+          {
+            label: "Weisheit",
+            value: "wisdom",
+            nwscriptValue: "IP_CONST_ABILITY_WIS",
+          },
+          {
+            label: "Charisma",
+            value: "charisma",
+            nwscriptValue: "IP_CONST_ABILITY_CHA",
+          },
+        ],
+      },
+      {
+        id: "bonus",
+        label: "Bonus",
+        type: "number",
+        required: true,
+        min: 1,
+        max: 12,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_ABILITY_BONUS",
+      functionName: "ItemPropertyAbilityBonus",
+      parameterOrder: ["ability", "bonus"],
+    },
+  },
+  // skillBonus
+  {
+    id: "skillBonus",
+    name: "Fertigkeitsbonus",
+    allowedSlots: [
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    keyParameters: ["skill"],
+    parameters: [
+      {
+        id: "skill",
+        label: "Fertigkeit",
+        type: "select",
+        required: true,
+        options: [
+          {
+            label: "Tierempathie",
+            value: "animalEmpathy",
+            nwscriptValue: "SKILL_ANIMAL_EMPATHY",
+          },
+          {
+            label: "Schätzen",
+            value: "appraise",
+            nwscriptValue: "SKILL_APPRAISE",
+          },
+          {
+            label: "Bluffen",
+            value: "bluff",
+            nwscriptValue: "SKILL_BLUFF",
+          },
+          {
+            label: "Konzentration",
+            value: "concentration",
+            nwscriptValue: "SKILL_CONCENTRATION",
+          },
+          {
+            label: "Rüstung herstellen",
+            value: "craftArmor",
+            nwscriptValue: "SKILL_CRAFT_ARMOR",
+          },
+          {
+            label: "Fallen herstellen",
+            value: "craftTrap",
+            nwscriptValue: "SKILL_CRAFT_TRAP",
+          },
+          {
+            label: "Waffen herstellen",
+            value: "craftWeapon",
+            nwscriptValue: "SKILL_CRAFT_WEAPON",
+          },
+          {
+            label: "Fallen entschärfen",
+            value: "disableTrap",
+            nwscriptValue: "SKILL_DISABLE_TRAP",
+          },
+          {
+            label: "Disziplin",
+            value: "discipline",
+            nwscriptValue: "SKILL_DISCIPLINE",
+          },
+          {
+            label: "Heilen",
+            value: "heal",
+            nwscriptValue: "SKILL_HEAL",
+          },
+          {
+            label: "Verstecken",
+            value: "hide",
+            nwscriptValue: "SKILL_HIDE",
+          },
+          {
+            label: "Einschüchtern",
+            value: "intimidate",
+            nwscriptValue: "SKILL_INTIMIDATE",
+          },
+          {
+            label: "Lauschen",
+            value: "listen",
+            nwscriptValue: "SKILL_LISTEN",
+          },
+          {
+            label: "Sagenkunde",
+            value: "lore",
+            nwscriptValue: "SKILL_LORE",
+          },
+          {
+            label: "Leise bewegen",
+            value: "moveSilently",
+            nwscriptValue: "SKILL_MOVE_SILENTLY",
+          },
+          {
+            label: "Schlösser öffnen",
+            value: "openLock",
+            nwscriptValue: "SKILL_OPEN_LOCK",
+          },
+          {
+            label: "Parieren",
+            value: "parry",
+            nwscriptValue: "SKILL_PARRY",
+          },
+          {
+            label: "Auftreten",
+            value: "perform",
+            nwscriptValue: "SKILL_PERFORM",
+          },
+          {
+            label: "Überreden",
+            value: "persuade",
+            nwscriptValue: "SKILL_PERSUADE",
+          },
+          {
+            label: "Taschendiebstahl",
+            value: "pickPocket",
+            nwscriptValue: "SKILL_PICK_POCKET",
+          },
+          {
+            label: "Reiten",
+            value: "ride",
+            nwscriptValue: "SKILL_RIDE",
+          },
+          {
+            label: "Suchen",
+            value: "search",
+            nwscriptValue: "SKILL_SEARCH",
+          },
+          {
+            label: "Fallen stellen",
+            value: "setTrap",
+            nwscriptValue: "SKILL_SET_TRAP",
+          },
+          {
+            label: "Zauberkunde",
+            value: "spellcraft",
+            nwscriptValue: "SKILL_SPELLCRAFT",
+          },
+          {
+            label: "Entdecken",
+            value: "spot",
+            nwscriptValue: "SKILL_SPOT",
+          },
+          {
+            label: "Provozieren",
+            value: "taunt",
+            nwscriptValue: "SKILL_TAUNT",
+          },
+          {
+            label: "Tänzeln",
+            value: "tumble",
+            nwscriptValue: "SKILL_TUMBLE",
+          },
+          {
+            label: "Magischen Gegenstand benutzen",
+            value: "useMagicDevice",
+            nwscriptValue: "SKILL_USE_MAGIC_DEVICE",
+          },
+        ],
+      },
+      {
+        id: "bonus",
+        label: "Bonus",
+        type: "number",
+        required: true,
+        min: 1,
+        max: 50,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_SKILL_BONUS",
+      functionName: "ItemPropertySkillBonus",
+      parameterOrder: ["skill", "bonus"],
+    },
+  },
+  // weightReduction
+  {
+    id: "weightReduction",
+    name: "Gewichtsreduzierung",
+    allowedSlots: [
+      "weapon",
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    parameters: [
+      {
+        id: "reduction",
+        label: "Gewichtsreduzierung",
+        type: "select",
+        required: true,
+        options: reducedWeightOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_WEIGHT_REDUCTION",
+      functionName: "ItemPropertyWeightReduction",
+      parameterOrder: ["reduction"],
+    },
+  },
+  // light
+  {
+    id: "light",
+    name: "Licht",
+    allowedSlots: [
+      "weapon",
+      "shield",
+      "armor",
+      "helmet",
+      "cloak",
+      "boots",
+      "belt",
+      "gloves",
+      "amulet",
+      "ring",
+    ],
+    parameters: [
+      {
+        id: "brightness",
+        label: "Helligkeit",
+        type: "select",
+        required: true,
+        options: lightBrightnessOptions,
+      },
+      {
+        id: "color",
+        label: "Farbe",
+        type: "select",
+        required: true,
+        options: lightColorOptions,
+      },
+    ],
+    nwscript: {
+      propertyType: "ITEM_PROPERTY_LIGHT",
+      functionName: "ItemPropertyLight",
+      parameterOrder: ["brightness", "color"],
+    },
+  },
+]
