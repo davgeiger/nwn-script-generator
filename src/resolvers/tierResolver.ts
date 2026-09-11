@@ -1,7 +1,7 @@
 import { itemProperties } from "@/data/itemProperties"
 import type { ItemPropertyConfig } from "@/types/properties"
 import type { TierConfig } from "@/types/tiers"
-import { getPropertyKey } from "@/utils/propertyResolver"
+import { getPropertyKey } from "@/resolvers/propertyResolver"
 
 export type ResolvedTierItem = {
   itemId: string

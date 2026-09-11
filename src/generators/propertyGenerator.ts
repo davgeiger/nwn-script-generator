@@ -3,7 +3,7 @@ import type { ItemPropertyConfig } from "@/types/properties"
 import {
   getParameterNwScriptValue,
   isParameterVisible,
-} from "@/utils/propertyResolver"
+} from "@/resolvers/propertyResolver"
 
 export function generatePropertyExpression(
   config: ItemPropertyConfig

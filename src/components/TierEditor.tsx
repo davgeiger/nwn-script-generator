@@ -5,7 +5,7 @@ import {
   getParameterLabel,
   getPropertyOperationLabel,
   isParameterVisible,
-} from "@/utils/propertyResolver"
+} from "@/resolvers/propertyResolver"
 import type { LevelItem } from "@/types/items"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,13 +13,18 @@ import { PropertyEditor } from "@/components/PropertyEditor"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
+import { resolveTierState } from "@/resolvers/tierResolver"
+
 type TierEditorProps = {
   tier: TierConfig
+  tiers: TierConfig[]
   items: LevelItem[]
   onChange: (tier: TierConfig) => void
 }
 
-export function TierEditor({ tier, items, onChange }: TierEditorProps) {
+export function TierEditor({ tier, tiers, items, onChange }: TierEditorProps) {
+  const resolvedTier = resolveTierState(tiers, tier)
+
   function handleAddProperty(itemId: string, property: ItemPropertyConfig) {
     const existingItem = tier.items.find((item) => item.itemId === itemId)
 
@@ -113,6 +118,10 @@ export function TierEditor({ tier, items, onChange }: TierEditorProps) {
             (tierItem) => tierItem.itemId === item.id
           )
 
+          const resolvedItem = resolvedTier.items.find(
+            (resolvedItem) => resolvedItem.itemId === item.id
+          )
+
           return (
             <div key={item.id} className="space-y-4 rounded-md border p-4">
               <h2 className="font-semibold">{item.name}</h2>
@@ -173,6 +182,54 @@ export function TierEditor({ tier, items, onChange }: TierEditorProps) {
                   </div>
                 )
               })}
+
+              <div className="space-y-2 rounded-md bg-muted/50 p-3">
+                <p className="text-sm font-semibold">Aktueller Zustand</p>
+
+                {!resolvedItem || resolvedItem.properties.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    Keine Eigenschaften
+                  </p>
+                ) : (
+                  resolvedItem.properties.map((property, index) => {
+                    const definition = itemProperties.find(
+                      (definition) => definition.id === property.propertyId
+                    )
+
+                    if (!definition) {
+                      return null
+                    }
+
+                    const displayParameters = definition.parameters.filter(
+                      (parameter) =>
+                        isParameterVisible(parameter, property.values)
+                    )
+
+                    return (
+                      <div
+                        key={`${property.propertyId}-${index}`}
+                        className="text-sm"
+                      >
+                        <span className="font-medium">{definition.name}</span>
+
+                        {displayParameters.length > 0 && (
+                          <span className="text-muted-foreground">
+                            {": "}
+                            {displayParameters
+                              .map((parameter) =>
+                                getParameterLabel(
+                                  parameter,
+                                  property.values[parameter.id]
+                                )
+                              )
+                              .join(", ")}
+                          </span>
+                        )}
+                      </div>
+                    )
+                  })
+                )}
+              </div>
 
               <PropertyEditor
                 item={item}

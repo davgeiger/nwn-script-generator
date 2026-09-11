@@ -81,6 +81,7 @@ export function TierListEditor({
         <div className="space-y-4">
           <TierEditor
             tier={selectedTier}
+            tiers={tiers}
             items={items}
             onChange={handleTierChange}
           />

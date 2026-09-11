@@ -19,7 +19,7 @@ import type {
   PropertyParameter,
   PropertyValue,
 } from "@/types/properties"
-import { isParameterVisible } from "@/utils/propertyResolver"
+import { isParameterVisible } from "@/resolvers/propertyResolver"
 import { SearchablePropertySelect } from "./SearchablePropertySelect"
 
 type PropertyEditorProps = {
