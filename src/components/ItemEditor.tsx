@@ -58,6 +58,7 @@ export function ItemEditor({ item, onChange }: ItemEditorProps) {
         <label className="text-sm font-medium">Item-Typ</label>
 
         <Select
+          items={itemSlots}
           value={item.slot}
           onValueChange={(value) => {
             if (value === null) {
