@@ -252,6 +252,16 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     nwscript: {
       propertyType: "ITEM_PROPERTY_SAVING_THROW_BONUS_SPECIFIC",
 
+      propertyTypeByValue: {
+        parameterId: "saveType",
+        values: {
+          fortitude: "ITEM_PROPERTY_SAVING_THROW_BONUS_SPECIFIC",
+          reflex: "ITEM_PROPERTY_SAVING_THROW_BONUS_SPECIFIC",
+          will: "ITEM_PROPERTY_SAVING_THROW_BONUS_SPECIFIC",
+          universal: "ITEM_PROPERTY_SAVING_THROW_BONUS",
+        },
+      },
+
       functionByValue: {
         parameterId: "saveType",
         values: {
@@ -261,6 +271,8 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
           universal: "ItemPropertyBonusSavingThrowVsX",
         },
       },
+
+      parameterOrder: ["saveType", "bonus"],
     },
   },
   // damageResistance

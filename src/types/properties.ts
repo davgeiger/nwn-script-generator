@@ -40,6 +40,10 @@ export type ItemPropertyNwScript = {
     parameterId: string
     values: Record<string, string>
   }
+  propertyTypeByValue?: {
+    parameterId: string
+    values: Record<string, string>
+  }
 }
 
 export type ItemPropertyDefinition = {

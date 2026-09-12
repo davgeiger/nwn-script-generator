@@ -1,7 +1,7 @@
 import { itemProperties } from "@/data/itemProperties"
 import type { ItemPropertyConfig } from "@/types/properties"
 import type { TierConfig } from "@/types/tiers"
-import { getPropertyKey } from "@/resolvers/propertyResolver"
+import { getPropertyKey, getPropertyType } from "@/resolvers/propertyResolver"
 
 export type ResolvedTierItem = {
   itemId: string
@@ -84,7 +84,9 @@ export function getManagedPropertyTypes(
         continue
       }
 
-      propertyTypes.add(definition.nwscript.propertyType)
+      const propertyType = getPropertyType(definition, property.values)
+
+      propertyTypes.add(propertyType)
     }
   }
 

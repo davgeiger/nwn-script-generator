@@ -104,3 +104,22 @@ export function isParameterVisible(
 
   return parameter.condition.values.includes(currentValue)
 }
+
+export function getPropertyType(
+  property: ItemPropertyDefinition,
+  values: Record<string, unknown>
+): string {
+  const resolver = property.nwscript.propertyTypeByValue
+
+  if (!resolver) {
+    return property.nwscript.propertyType
+  }
+
+  const value = values[resolver.parameterId]
+
+  if (value === undefined || value === null) {
+    return property.nwscript.propertyType
+  }
+
+  return resolver.values[String(value)] ?? property.nwscript.propertyType
+}

@@ -95,6 +95,8 @@ export function generateLevelScript(config: ProjectConfig): string {
   })
 
   return [
+    '#include "x2_inc_itemprop"',
+    "",
     getPlayerItemByTagFunction,
     "",
     "void UpdateLevelItems(object oPC)",
@@ -104,6 +106,18 @@ export function generateLevelScript(config: ProjectConfig): string {
     indent(itemGrantBlocks),
     "",
     indent(levelBlocks.join("\n\n")),
+    "}",
+    "",
+    "void main()",
+    "{",
+    indent("object oPC = OBJECT_SELF;"),
+    "",
+    indent("if (!GetIsObjectValid(oPC))"),
+    indent("{"),
+    indent("return;", 8),
+    indent("}"),
+    "",
+    indent("UpdateLevelItems(oPC);"),
     "}",
   ].join("\n")
 }

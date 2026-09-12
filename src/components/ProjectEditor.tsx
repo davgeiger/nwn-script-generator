@@ -6,14 +6,13 @@ import type { LevelItem } from "@/types/items"
 
 import { TierListEditor } from "@/components/tier/TierListEditor"
 import { ItemListEditor } from "@/components/item/ItemListEditor"
+import { ScriptManager } from "@/components/script/ScriptManager"
 
-import { Button } from "@/components/ui/button"
-import { ScriptPreviewDialog } from "@/components/script/ScriptPreviewDialog"
-import { saveScript } from "@/utils/saveScript"
-import { generateLevelScript } from "@/generators/scriptGenerator"
+import { generateScriptFiles } from "@/generators/scriptFilesGenerator"
 
 const initialConfig: ProjectConfig = {
   items: initialItems,
+
   tiers: [
     {
       id: "tier-1",
@@ -22,13 +21,18 @@ const initialConfig: ProjectConfig = {
       items: [],
     },
   ],
+
+  scripts: {
+    updateItemsName: "lvl_update_items",
+    updateName: "lvl_update",
+    rebuildName: "lvl_rebuild",
+  },
 }
 
 export function ProjectEditor() {
   const [config, setConfig] = useState<ProjectConfig>(initialConfig)
-  const [scriptDialogOpen, setScriptDialogOpen] = useState(false)
 
-  const generatedScript = generateLevelScript(config)
+  console.log(generateScriptFiles(config))
 
   function handleItemChange(updatedItem: LevelItem) {
     setConfig((currentConfig) => ({
@@ -70,23 +74,8 @@ export function ProjectEditor() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
-      <div className="flex gap-2">
-        <Button variant="outline" onClick={() => setScriptDialogOpen(true)}>
-          Skript anzeigen
-        </Button>
+      <ScriptManager config={config} />
 
-        <Button
-          onClick={() => saveScript("lvl_update_items.nss", generatedScript)}
-        >
-          Als .nss speichern
-        </Button>
-      </div>
-
-      <ScriptPreviewDialog
-        open={scriptDialogOpen}
-        onOpenChange={setScriptDialogOpen}
-        script={generatedScript}
-      />
       <ItemListEditor
         items={config.items}
         onItemChange={handleItemChange}

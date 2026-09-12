@@ -289,7 +289,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
       },
     ],
     nwscript: {
-      propertyType: "ITEM_PROPERTY_WEIGHT_REDUCTION",
+      propertyType: "ITEM_PROPERTY_BASE_ITEM_WEIGHT_REDUCTION",
       functionName: "ItemPropertyWeightReduction",
       parameterOrder: ["reduction"],
     },

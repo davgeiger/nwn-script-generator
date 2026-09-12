@@ -90,7 +90,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     ],
     nwscript: {
       propertyType: "ITEM_PROPERTY_MASSIVE_CRITICALS",
-      functionName: "ItemPropertyMassiveCrits",
+      functionName: "ItemPropertyMassiveCritical",
       parameterOrder: ["damage"],
     },
   },
@@ -410,7 +410,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
       },
     ],
     nwscript: {
-      propertyType: "ITEM_PROPERTY_ENHANCEMENT_BONUS_VS_SPECIFIC_ALIGN",
+      propertyType: "ITEM_PROPERTY_ENHANCEMENT_BONUS_VS_SPECIFIC_ALIGNEMENT",
       functionName: "ItemPropertyEnhancementBonusVsSAlign",
       parameterOrder: ["alignment", "bonus"],
     },
@@ -431,7 +431,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
       },
     ],
     nwscript: {
-      propertyType: "ITEM_PROPERTY_MAXRANGE_STRENGTH_MOD",
+      propertyType: "ITEM_PROPERTY_MIGHTY",
       functionName: "ItemPropertyMaxRangeStrengthMod",
       parameterOrder: ["bonus"],
     },

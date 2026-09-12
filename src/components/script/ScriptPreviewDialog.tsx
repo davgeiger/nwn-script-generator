@@ -10,12 +10,14 @@ import { Button } from "@/components/ui/button"
 type ScriptPreviewDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
+  filename: string
   script: string
 }
 
 export function ScriptPreviewDialog({
   open,
   onOpenChange,
+  filename,
   script,
 }: ScriptPreviewDialogProps) {
   async function handleCopy() {
@@ -26,7 +28,7 @@ export function ScriptPreviewDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex h-[95vh] w-[95vw] max-w-none flex-col sm:w-[95vw] sm:max-w-none">
         <DialogHeader>
-          <DialogTitle>Generiertes NWScript</DialogTitle>
+          <DialogTitle>{filename}</DialogTitle>
 
           <DialogDescription>
             Das Skript kann direkt in das NWN-Toolset kopiert werden.

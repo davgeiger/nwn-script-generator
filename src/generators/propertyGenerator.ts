@@ -1,6 +1,7 @@
 import { itemProperties } from "@/data/itemProperties"
 import type { ItemPropertyConfig } from "@/types/properties"
 import {
+  getPropertyType,
   getParameterNwScriptValue,
   isParameterVisible,
 } from "@/resolvers/propertyResolver"
@@ -98,14 +99,17 @@ export function generatePropertyStatement(
         return undefined
       }
 
+      const propertyType = getPropertyType(definition, config.values)
+
       return [
-        `IPRemoveMatchingItemProperties(${itemVariable}, ${definition.nwscript.propertyType}, -1);`,
+        `IPRemoveMatchingItemProperties(${itemVariable}, ${propertyType}, -1);`,
         `IPSafeAddItemProperty(${itemVariable}, ${expression});`,
       ].join("\n")
     }
 
     case "remove":
-      return `IPRemoveMatchingItemProperties(${itemVariable}, ${definition.nwscript.propertyType}, -1);`
+      const propertyType = getPropertyType(definition, config.values)
+      return `IPRemoveMatchingItemProperties(${itemVariable}, ${propertyType}, -1);`
   }
 }
 
