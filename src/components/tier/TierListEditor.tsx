@@ -26,6 +26,13 @@ export function TierListEditor({
 
   const canAddTier = tiers.length < 39 && highestLevel < 40
 
+  const lastTier =
+    tiers.length > 0
+      ? tiers.reduce((highest, tier) =>
+          tier.tier > highest.tier ? tier : highest
+        )
+      : undefined
+
   function handleAddTier() {
     if (!canAddTier) {
       return
@@ -51,13 +58,17 @@ export function TierListEditor({
     setSelectedTierId(newTier.id)
   }
 
-  function handleRemoveTier(tierId: string) {
-    const remainingTiers = tiers.filter((tier) => tier.id !== tierId)
+  function handleRemoveLastTier() {
+    if (!lastTier) {
+      return
+    }
+
+    const remainingTiers = tiers.filter((tier) => tier.id !== lastTier.id)
 
     onTiersChange(remainingTiers)
 
-    if (selectedTierId === tierId) {
-      setSelectedTierId(remainingTiers[0]?.id ?? "")
+    if (selectedTierId === lastTier.id) {
+      setSelectedTierId(remainingTiers.at(-1)?.id ?? "")
     }
   }
 
@@ -69,44 +80,45 @@ export function TierListEditor({
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant="secondary"
-          onClick={handleAddTier}
-          disabled={!canAddTier}
-        >
-          + Tier hinzufügen
-        </Button>
-
-        {tiers.map((tier) => (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
           <Button
-            key={tier.id}
-            variant={tier.id === selectedTierId ? "default" : "outline"}
-            onClick={() => setSelectedTierId(tier.id)}
+            variant="secondary"
+            onClick={handleAddTier}
+            disabled={!canAddTier}
           >
-            Tier {tier.tier}
+            + Tier hinzufügen
           </Button>
-        ))}
+
+          <Button
+            variant="destructive"
+            onClick={handleRemoveLastTier}
+            disabled={!lastTier}
+          >
+            {lastTier ? `Tier ${lastTier.tier} entfernen` : "Tier entfernen"}
+          </Button>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {tiers.map((tier) => (
+            <Button
+              key={tier.id}
+              variant={tier.id === selectedTierId ? "default" : "outline"}
+              onClick={() => setSelectedTierId(tier.id)}
+            >
+              Tier {tier.tier}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {selectedTier && (
-        <div className="space-y-4">
-          <TierEditor
-            tier={selectedTier}
-            tiers={tiers}
-            items={items}
-            onChange={handleTierChange}
-          />
-
-          <div className="flex justify-end">
-            <Button
-              variant="destructive"
-              onClick={() => handleRemoveTier(selectedTier.id)}
-            >
-              Tier entfernen
-            </Button>
-          </div>
-        </div>
+        <TierEditor
+          tier={selectedTier}
+          tiers={tiers}
+          items={items}
+          onChange={handleTierChange}
+        />
       )}
     </div>
   )
