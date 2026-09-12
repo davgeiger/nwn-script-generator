@@ -7,6 +7,9 @@ import type { LevelItem } from "@/types/items"
 import { TierListEditor } from "@/components/tier/TierListEditor"
 import { ItemListEditor } from "@/components/item/ItemListEditor"
 
+import { Button } from "@/components/ui/button"
+import { ScriptPreviewDialog } from "@/components/script/ScriptPreviewDialog"
+import { saveScript } from "@/utils/saveScript"
 import { generateLevelScript } from "@/generators/scriptGenerator"
 
 const initialConfig: ProjectConfig = {
@@ -23,8 +26,9 @@ const initialConfig: ProjectConfig = {
 
 export function ProjectEditor() {
   const [config, setConfig] = useState<ProjectConfig>(initialConfig)
+  const [scriptDialogOpen, setScriptDialogOpen] = useState(false)
 
-  console.log(generateLevelScript(config))
+  const generatedScript = generateLevelScript(config)
 
   function handleItemChange(updatedItem: LevelItem) {
     setConfig((currentConfig) => ({
@@ -66,6 +70,23 @@ export function ProjectEditor() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-8">
+      <div className="flex gap-2">
+        <Button variant="outline" onClick={() => setScriptDialogOpen(true)}>
+          Skript anzeigen
+        </Button>
+
+        <Button
+          onClick={() => saveScript("lvl_update_items.nss", generatedScript)}
+        >
+          Als .nss speichern
+        </Button>
+      </div>
+
+      <ScriptPreviewDialog
+        open={scriptDialogOpen}
+        onOpenChange={setScriptDialogOpen}
+        script={generatedScript}
+      />
       <ItemListEditor
         items={config.items}
         onItemChange={handleItemChange}
