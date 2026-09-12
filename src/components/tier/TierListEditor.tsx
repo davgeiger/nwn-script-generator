@@ -26,6 +26,8 @@ export function TierListEditor({
 
   const canAddTier = tiers.length < 39 && highestLevel < 40
 
+  const canRemoveTier = tiers.length > 1
+
   const lastTier =
     tiers.length > 0
       ? tiers.reduce((highest, tier) =>
@@ -59,7 +61,7 @@ export function TierListEditor({
   }
 
   function handleRemoveLastTier() {
-    if (!lastTier) {
+    if (!lastTier || tiers.length <= 1) {
       return
     }
 
@@ -93,7 +95,7 @@ export function TierListEditor({
           <Button
             variant="destructive"
             onClick={handleRemoveLastTier}
-            disabled={!lastTier}
+            disabled={!canRemoveTier}
           >
             {lastTier ? `Tier ${lastTier.tier} entfernen` : "Tier entfernen"}
           </Button>
