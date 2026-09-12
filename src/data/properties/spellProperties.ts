@@ -5,7 +5,7 @@ import {
   spellClassOptions,
   spellImmunityOptions,
   spellSchoolOptions,
-} from "@/data/propertyOptions"
+} from "@/data/options/propertyOptions"
 import { castSpellOptions } from "@/data/options/castSpellOptions"
 
 export const spellProperties: ItemPropertyDefinition[] = [

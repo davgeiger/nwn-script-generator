@@ -10,7 +10,7 @@ import {
   racialTypeOptions,
   reducedWeightOptions,
   weightIncreaseOptions,
-} from "@/data/propertyOptions"
+} from "@/data/options/propertyOptions"
 
 export const miscProperties: ItemPropertyDefinition[] = [
   // abilityBonus

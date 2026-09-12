@@ -4,7 +4,7 @@ import type { TierConfig } from "@/types/tiers"
 import type { LevelItem } from "@/types/items"
 
 import { Button } from "@/components/ui/button"
-import { TierEditor } from "@/components/TierEditor"
+import { TierEditor } from "@/components/tier/TierEditor"
 
 type TierListEditorProps = {
   items: LevelItem[]
@@ -21,7 +21,16 @@ export function TierListEditor({
 
   const selectedTier = tiers.find((tier) => tier.id === selectedTierId)
 
+  const highestLevel =
+    tiers.length > 0 ? Math.max(...tiers.map((tier) => tier.level)) : 1
+
+  const canAddTier = tiers.length < 39 && highestLevel < 40
+
   function handleAddTier() {
+    if (!canAddTier) {
+      return
+    }
+
     const highestTier =
       tiers.length > 0
         ? tiers.reduce((highest, tier) =>
@@ -34,12 +43,11 @@ export function TierListEditor({
     const newTier: TierConfig = {
       id: `tier-${nextTierNumber}`,
       tier: nextTierNumber,
-      level: highestTier ? highestTier.level + 1 : 1,
+      level: highestLevel + 1,
       items: [],
     }
 
     onTiersChange([...tiers, newTier])
-
     setSelectedTierId(newTier.id)
   }
 
@@ -62,6 +70,14 @@ export function TierListEditor({
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div className="flex flex-wrap gap-2">
+        <Button
+          variant="secondary"
+          onClick={handleAddTier}
+          disabled={!canAddTier}
+        >
+          + Tier hinzufügen
+        </Button>
+
         {tiers.map((tier) => (
           <Button
             key={tier.id}
@@ -71,10 +87,6 @@ export function TierListEditor({
             Tier {tier.tier}
           </Button>
         ))}
-
-        <Button variant="secondary" onClick={handleAddTier}>
-          + Tier hinzufügen
-        </Button>
       </div>
 
       {selectedTier && (

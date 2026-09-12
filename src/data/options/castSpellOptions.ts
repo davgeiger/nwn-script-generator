@@ -1,5 +1,5 @@
 import type { PropertyParameterOption } from "@/types/properties"
-import { sortOptionsByLabel } from "../propertyOptions"
+import { sortOptionsByLabel } from "./propertyOptions"
 
 export const castSpellOptions: PropertyParameterOption[] = sortOptionsByLabel([
   {

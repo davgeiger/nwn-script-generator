@@ -3,7 +3,7 @@ import {
   alignmentGroupOptions,
   alignmentOptions,
   racialTypeOptions,
-} from "@/data/propertyOptions"
+} from "@/data/options/propertyOptions"
 
 export const onHitProperties: ItemPropertyDefinition[] = [
   // onHit

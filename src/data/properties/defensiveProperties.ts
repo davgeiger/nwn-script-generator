@@ -6,7 +6,7 @@ import {
   damageVulnerabilityOptions,
   physicalDamageTypeOptions,
   racialTypeOptions,
-} from "@/data/propertyOptions"
+} from "@/data/options/propertyOptions"
 
 export const defensiveProperties: ItemPropertyDefinition[] = [
   // armorClassBonus

@@ -4,8 +4,8 @@ import { initialItems } from "@/data/items"
 import type { ProjectConfig } from "@/types/config"
 import type { LevelItem } from "@/types/items"
 
-import { TierListEditor } from "@/components/TierListEditor"
-import { ItemListEditor } from "@/components/ItemListEditor"
+import { TierListEditor } from "@/components/tier/TierListEditor"
+import { ItemListEditor } from "@/components/item/ItemListEditor"
 
 import { generateLevelScript } from "@/generators/scriptGenerator"
 
@@ -15,7 +15,7 @@ const initialConfig: ProjectConfig = {
     {
       id: "tier-1",
       tier: 1,
-      level: 1,
+      level: 2,
       items: [],
     },
   ],

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronDown, ChevronRight } from "lucide-react"
-import { ItemEditor } from "@/components/ItemEditor"
+import { ItemEditor } from "@/components/item/ItemEditor"
 import type { LevelItem } from "@/types/items"
 import {
   Collapsible,

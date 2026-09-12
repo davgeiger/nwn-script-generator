@@ -9,7 +9,7 @@ import {
   racialTypeOptions,
   standardDamageTypeOptions,
   unlimitedAmmoOptions,
-} from "@/data/propertyOptions"
+} from "@/data/options/propertyOptions"
 
 export const weaponProperties: ItemPropertyDefinition[] = [
   // enhancementBonus
