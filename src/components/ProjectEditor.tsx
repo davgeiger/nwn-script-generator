@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { loadProject, saveProject } from "@/storage/projectStorage"
 
 import { getActiveBuild, getBuildItems } from "@/resolvers/buildResolver"
 
@@ -45,7 +46,9 @@ const initialConfig: ProjectConfig = {
 }
 
 export function ProjectEditor() {
-  const [config, setConfig] = useState<ProjectConfig>(initialConfig)
+  const [config, setConfig] = useState<ProjectConfig>(() => {
+    return loadProject() ?? initialConfig
+  })
 
   console.log(generateScriptFiles(config))
 
@@ -56,6 +59,10 @@ export function ProjectEditor() {
   }
 
   const buildItems = getBuildItems(config, activeBuild)
+
+  useEffect(() => {
+    saveProject(config)
+  }, [config])
 
   function handleItemChange(updatedItem: LevelItem) {
     setConfig((currentConfig) => ({
