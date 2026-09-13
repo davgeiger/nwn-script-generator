@@ -15,27 +15,51 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import type { GeneratedScriptFile } from "@/types/scripts"
 
 type ScriptManagerProps = {
   config: ProjectConfig
 }
 
 export function ScriptManager({ config }: ScriptManagerProps) {
+  const [showTestScripts, setShowTestScripts] = useState(false)
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [previewScript, setPreviewScript] =
+    useState<GeneratedScriptFile | null>(null)
   const scriptFiles = useMemo(() => generateScriptFiles(config), [config])
 
-  const [selectedFilename, setSelectedFilename] = useState(
-    scriptFiles[0]?.filename ?? ""
+  const normalScripts = scriptFiles.filter(
+    (script) =>
+      !script.filename.startsWith("lvl_test_") &&
+      !script.filename.startsWith("lvl_t_")
   )
 
-  const [previewOpen, setPreviewOpen] = useState(false)
+  const testScripts = scriptFiles.filter(
+    (script) =>
+      script.filename.startsWith("lvl_test_") ||
+      script.filename.startsWith("lvl_t_")
+  )
+
+  const [selectedFilename, setSelectedFilename] = useState(
+    normalScripts[0]?.filename ?? ""
+  )
+
+  const [selectedTestFilename, setSelectedTestFilename] = useState(
+    testScripts[0]?.filename ?? ""
+  )
 
   const selectedScript =
-    scriptFiles.find((script) => script.filename === selectedFilename) ?? null
+    normalScripts.find((script) => script.filename === selectedFilename) ?? null
+
+  const selectedTestScript =
+    testScripts.find((script) => script.filename === selectedTestFilename) ??
+    null
 
   return (
     <div className="space-y-3">
       <h1 className="text-lg font-semibold">Skripte</h1>
-      <div className="flex gap-1">
+      <div className="flex flex-wrap items-center gap-2">
         <Select
           value={selectedFilename}
           onValueChange={(value) => {
@@ -45,27 +69,31 @@ export function ScriptManager({ config }: ScriptManagerProps) {
           }}
         >
           <SelectTrigger className="w-64">
-            <SelectValue placeholder="Skript auswählen" />
+            <SelectValue />
           </SelectTrigger>
 
           <SelectContent>
-            {scriptFiles.map((script) => (
+            {normalScripts.map((script) => (
               <SelectItem key={script.filename} value={script.filename}>
                 {script.filename}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
+
         <Button
           variant="outline"
-          disabled={!selectedScript}
-          onClick={() => setPreviewOpen(true)}
+          onClick={() => {
+            if (selectedScript) {
+              setPreviewScript(selectedScript)
+              setPreviewOpen(true)
+            }
+          }}
         >
           Anzeigen
         </Button>
 
         <Button
-          disabled={!selectedScript}
           onClick={() => {
             if (selectedScript) {
               saveScript(selectedScript.filename, selectedScript.content)
@@ -74,22 +102,81 @@ export function ScriptManager({ config }: ScriptManagerProps) {
         >
           Speichern
         </Button>
-
-        <Button
-          variant="secondary"
-          onClick={() => saveScriptPackage(scriptFiles)}
-        >
-          Alle herunterladen
-        </Button>
       </div>
-      {selectedScript && (
+      <div className="flex items-center gap-2">
+        <Checkbox
+          id="show-test-scripts"
+          checked={showTestScripts}
+          onCheckedChange={(checked) => setShowTestScripts(checked === true)}
+        />
+
+        <label htmlFor="show-test-scripts" className="text-sm font-medium">
+          Testskripte anzeigen
+        </label>
+      </div>
+      {showTestScripts && (
+        <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={selectedTestFilename}
+            onValueChange={(value) => {
+              if (value !== null) {
+                setSelectedTestFilename(value)
+              }
+            }}
+          >
+            <SelectTrigger className="w-64">
+              <SelectValue />
+            </SelectTrigger>
+
+            <SelectContent>
+              {testScripts.map((script) => (
+                <SelectItem key={script.filename} value={script.filename}>
+                  {script.filename}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Button
+            variant="outline"
+            onClick={() => {
+              if (selectedTestScript) {
+                setPreviewScript(selectedTestScript)
+                setPreviewOpen(true)
+              }
+            }}
+          >
+            Anzeigen
+          </Button>
+
+          <Button
+            onClick={() => {
+              if (selectedTestScript) {
+                saveScript(
+                  selectedTestScript.filename,
+                  selectedTestScript.content
+                )
+              }
+            }}
+          >
+            Speichern
+          </Button>
+        </div>
+      )}
+      {previewScript && (
         <ScriptPreviewDialog
           open={previewOpen}
           onOpenChange={setPreviewOpen}
-          filename={selectedScript.filename}
-          script={selectedScript.content}
+          filename={previewScript.filename}
+          script={previewScript.content}
         />
       )}
+      <Button
+        variant="secondary"
+        onClick={() => saveScriptPackage(scriptFiles)}
+      >
+        Alle herunterladen
+      </Button>
     </div>
   )
 }

@@ -6,11 +6,12 @@ import { generateUpdateScript } from "@/generators/updateScriptGenerator"
 
 import type { ProjectConfig } from "@/types/config"
 import type { GeneratedScriptFile } from "@/types/scripts"
+import { generatePropertyTestScripts } from "./test/propertyTestGenerator"
 
 export function generateScriptFiles(
   config: ProjectConfig
 ): GeneratedScriptFile[] {
-  const campaignScripts = generateCampaignScripts(config)
+  const testScripts = generatePropertyTestScripts(config)
 
   return [
     {
@@ -30,6 +31,8 @@ export function generateScriptFiles(
       content: generateLevelItemsInclude(config),
     },
 
-    ...campaignScripts,
+    ...generateCampaignScripts(config),
+
+    ...testScripts,
   ]
 }
