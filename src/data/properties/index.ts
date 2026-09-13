@@ -6,6 +6,14 @@ import { onHitProperties } from "./onHitProperties"
 import { spellProperties } from "./spellProperties"
 import { weaponProperties } from "./weaponProperties"
 
+export {
+  weaponProperties,
+  defensiveProperties,
+  spellProperties,
+  onHitProperties,
+  miscProperties,
+}
+
 export const itemProperties: ItemPropertyDefinition[] = [
   ...weaponProperties,
   ...defensiveProperties,

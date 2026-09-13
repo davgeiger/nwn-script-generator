@@ -5,6 +5,12 @@ import type { LevelItem } from "@/types/items"
 
 import { Button } from "@/components/ui/button"
 import { TierEditor } from "@/components/tier/TierEditor"
+import { ChevronDown, ChevronRight } from "lucide-react"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 type TierListEditorProps = {
   items: LevelItem[]
@@ -18,6 +24,7 @@ export function TierListEditor({
   onTiersChange,
 }: TierListEditorProps) {
   const [selectedTierId, setSelectedTierId] = useState(tiers[0]?.id ?? "")
+  const [open, setOpen] = useState(true)
 
   const selectedTier = tiers.find((tier) => tier.id === selectedTierId)
 
@@ -81,47 +88,70 @@ export function TierListEditor({
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6">
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="secondary"
-            onClick={handleAddTier}
-            disabled={!canAddTier}
-          >
-            + Tier hinzufügen
-          </Button>
+    <div className="space-y-3">
+      <h1 className="text-lg font-semibold">Tier Editor</h1>
+      <Collapsible open={open} onOpenChange={setOpen} className="space-y-3">
+        <CollapsibleTrigger
+          render={
+            <Button variant="outline" className="w-full justify-between" />
+          }
+        >
+          <span>Tier-Konfiguration</span>
 
-          <Button
-            variant="destructive"
-            onClick={handleRemoveLastTier}
-            disabled={!canRemoveTier}
-          >
-            {lastTier ? `Tier ${lastTier.tier} entfernen` : "Tier entfernen"}
-          </Button>
-        </div>
+          {open ? (
+            <ChevronDown className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          )}
+        </CollapsibleTrigger>
 
-        <div className="flex flex-wrap gap-2">
-          {tiers.map((tier) => (
-            <Button
-              key={tier.id}
-              variant={tier.id === selectedTierId ? "default" : "outline"}
-              onClick={() => setSelectedTierId(tier.id)}
-            >
-              Tier {tier.tier}
-            </Button>
-          ))}
-        </div>
-      </div>
+        <CollapsibleContent>
+          <div className="space-y-6">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={handleAddTier}
+                  disabled={!canAddTier}
+                >
+                  + Tier hinzufügen
+                </Button>
 
-      {selectedTier && (
-        <TierEditor
-          tier={selectedTier}
-          tiers={tiers}
-          items={items}
-          onChange={handleTierChange}
-        />
-      )}
+                <Button
+                  variant="destructive"
+                  onClick={handleRemoveLastTier}
+                  disabled={!canRemoveTier}
+                >
+                  {lastTier
+                    ? `Tier ${lastTier.tier} entfernen`
+                    : "Tier entfernen"}
+                </Button>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {tiers.map((tier) => (
+                  <Button
+                    key={tier.id}
+                    variant={tier.id === selectedTierId ? "default" : "outline"}
+                    onClick={() => setSelectedTierId(tier.id)}
+                  >
+                    Tier {tier.tier}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {selectedTier && (
+              <TierEditor
+                tier={selectedTier}
+                tiers={tiers}
+                items={items}
+                onChange={handleTierChange}
+              />
+            )}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   )
 }

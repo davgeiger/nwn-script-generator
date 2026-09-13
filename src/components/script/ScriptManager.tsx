@@ -8,71 +8,88 @@ import { saveScript } from "@/utils/saveScript"
 import { saveScriptPackage } from "@/utils/saveScriptPackage"
 
 import type { ProjectConfig } from "@/types/config"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 type ScriptManagerProps = {
   config: ProjectConfig
 }
 
 export function ScriptManager({ config }: ScriptManagerProps) {
-  const [selectedFilename, setSelectedFilename] = useState<string | null>(null)
-
   const scriptFiles = useMemo(() => generateScriptFiles(config), [config])
+
+  const [selectedFilename, setSelectedFilename] = useState(
+    scriptFiles[0]?.filename ?? ""
+  )
+
+  const [previewOpen, setPreviewOpen] = useState(false)
 
   const selectedScript =
     scriptFiles.find((script) => script.filename === selectedFilename) ?? null
 
   return (
-    <>
-      <div className="space-y-3">
-        <h2 className="text-lg font-semibold">Skripte</h2>
-
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Skripte</h2>
-
-          <Button onClick={() => saveScriptPackage(scriptFiles)}>
-            Alle herunterladen
-          </Button>
-        </div>
-
-        <div className="flex flex-wrap gap-2">
-          {scriptFiles.map((script) => (
-            <div
-              key={script.filename}
-              className="flex items-center gap-2 rounded-md border p-2"
-            >
-              <span className="font-mono text-sm">{script.filename}</span>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedFilename(script.filename)}
-              >
-                Anzeigen
-              </Button>
-
-              <Button
-                size="sm"
-                onClick={() => saveScript(script.filename, script.content)}
-              >
-                Speichern
-              </Button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {selectedScript && (
-        <ScriptPreviewDialog
-          open={true}
-          onOpenChange={(open) => {
-            if (!open) {
-              setSelectedFilename(null)
+    <div className="space-y-3">
+      <h1 className="text-lg font-semibold">Skripte</h1>
+      <div className="flex gap-1">
+        <Select
+          value={selectedFilename}
+          onValueChange={(value) => {
+            if (value !== null) {
+              setSelectedFilename(value)
             }
           }}
+        >
+          <SelectTrigger className="w-64">
+            <SelectValue placeholder="Skript auswählen" />
+          </SelectTrigger>
+
+          <SelectContent>
+            {scriptFiles.map((script) => (
+              <SelectItem key={script.filename} value={script.filename}>
+                {script.filename}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button
+          variant="outline"
+          disabled={!selectedScript}
+          onClick={() => setPreviewOpen(true)}
+        >
+          Anzeigen
+        </Button>
+
+        <Button
+          disabled={!selectedScript}
+          onClick={() => {
+            if (selectedScript) {
+              saveScript(selectedScript.filename, selectedScript.content)
+            }
+          }}
+        >
+          Speichern
+        </Button>
+
+        <Button
+          variant="secondary"
+          onClick={() => saveScriptPackage(scriptFiles)}
+        >
+          Alle herunterladen
+        </Button>
+      </div>
+      {selectedScript && (
+        <ScriptPreviewDialog
+          open={previewOpen}
+          onOpenChange={setPreviewOpen}
           filename={selectedScript.filename}
           script={selectedScript.content}
         />
       )}
-    </>
+    </div>
   )
 }

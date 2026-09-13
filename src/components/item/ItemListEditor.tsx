@@ -26,51 +26,54 @@ export function ItemListEditor({
   const [isItemEditorOpen, setIsItemEditorOpen] = useState(false)
 
   return (
-    <Collapsible open={isItemEditorOpen} onOpenChange={setIsItemEditorOpen}>
-      <CollapsibleTrigger
-        render={<Button variant="outline" className="w-full justify-between" />}
-      >
-        <span>Item-Konfiguration</span>
+    <div className="space-y-3">
+      <h1 className="text-lg font-semibold">Item Editor</h1>
+      <Collapsible open={isItemEditorOpen} onOpenChange={setIsItemEditorOpen}>
+        <CollapsibleTrigger
+          render={
+            <Button variant="outline" className="w-full justify-between" />
+          }
+        >
+          <span>Item-Konfiguration</span>
 
-        {isItemEditorOpen ? (
-          <ChevronDown className="h-4 w-4" />
-        ) : (
-          <ChevronRight className="h-4 w-4" />
-        )}
-      </CollapsibleTrigger>
+          {isItemEditorOpen ? (
+            <ChevronDown className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          )}
+        </CollapsibleTrigger>
 
-      <CollapsibleContent className="pt-4">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">Items</h2>
-
-            <Button onClick={onAddItem}>+ Item hinzufügen</Button>
-          </div>
-
+        <CollapsibleContent className="pt-4">
           <div className="space-y-4">
-            {items.map((item) => (
-              <Card key={item.id}>
-                <CardHeader>
-                  <CardTitle>{item.name}</CardTitle>
-                </CardHeader>
+            <div className="flex items-center">
+              <Button onClick={onAddItem}>+ Item hinzufügen</Button>
+            </div>
 
-                <CardContent className="space-y-4">
-                  <ItemEditor item={item} onChange={onItemChange} />
+            <div className="space-y-4">
+              {items.map((item) => (
+                <Card key={item.id}>
+                  <CardHeader>
+                    <CardTitle>{item.name}</CardTitle>
+                  </CardHeader>
 
-                  <div className="flex justify-end">
-                    <Button
-                      variant="destructive"
-                      onClick={() => onRemoveItem(item.id)}
-                    >
-                      Item entfernen
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent className="space-y-4">
+                    <ItemEditor item={item} onChange={onItemChange} />
+
+                    <div className="flex justify-end">
+                      <Button
+                        variant="destructive"
+                        onClick={() => onRemoveItem(item.id)}
+                      >
+                        Item entfernen
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </CollapsibleContent>
-    </Collapsible>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
   )
 }
