@@ -8,6 +8,16 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { useState } from "react"
 
 type ItemListEditorProps = {
@@ -24,6 +34,7 @@ export function ItemListEditor({
   onRemoveItem,
 }: ItemListEditorProps) {
   const [isItemEditorOpen, setIsItemEditorOpen] = useState(false)
+  const [pendingItemId, setPendingItemId] = useState<string | null>(null)
 
   return (
     <div className="space-y-3">
@@ -62,7 +73,7 @@ export function ItemListEditor({
                     <div className="flex justify-end">
                       <Button
                         variant="destructive"
-                        onClick={() => onRemoveItem(item.id)}
+                        onClick={() => setPendingItemId(item.id)}
                       >
                         Item entfernen
                       </Button>
@@ -74,6 +85,43 @@ export function ItemListEditor({
           </div>
         </CollapsibleContent>
       </Collapsible>
+      <AlertDialog
+        open={pendingItemId !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPendingItemId(null)
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Item wirklich löschen?</AlertDialogTitle>
+
+            <AlertDialogDescription>
+              Das Item wird aus dem gesamten Projekt entfernt. Dabei werden auch
+              alle Zuordnungen zu Builds und alle zugehörigen
+              Tier-Konfigurationen gelöscht. Dieser Vorgang kann nicht
+              rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingItemId) {
+                  onRemoveItem(pendingItemId)
+                }
+
+                setPendingItemId(null)
+              }}
+            >
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

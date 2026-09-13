@@ -12,28 +12,41 @@ import { ChevronDown, ChevronRight } from "lucide-react"
 
 import type { BuildConfig } from "@/types/builds"
 import type { LevelItem } from "@/types/items"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog"
 
 type BuildItemAssignmentProps = {
   items: LevelItem[]
   activeBuild: BuildConfig
-  onChange: (itemIds: string[]) => void
+
+  onAddItem: (itemId: string) => void
+  onRemoveItem: (itemId: string) => void
 }
 
 export function BuildItemAssignment({
   items,
   activeBuild,
-  onChange,
+  onAddItem,
+  onRemoveItem,
 }: BuildItemAssignmentProps) {
   const [open, setOpen] = useState(false)
+  const [pendingItemId, setPendingItemId] = useState<string | null>(null)
 
   function handleCheckedChange(itemId: string, checked: boolean) {
     if (checked) {
-      onChange([...activeBuild.itemIds, itemId])
-
+      onAddItem(itemId)
       return
     }
 
-    onChange(activeBuild.itemIds.filter((id) => id !== itemId))
+    onRemoveItem(itemId)
   }
 
   return (
@@ -64,9 +77,14 @@ export function BuildItemAssignment({
                   <Checkbox
                     id={`build-item-${item.id}`}
                     checked={checked}
-                    onCheckedChange={(value) =>
-                      handleCheckedChange(item.id, value === true)
-                    }
+                    onCheckedChange={(value) => {
+                      if (value === true) {
+                        handleCheckedChange(item.id, true)
+                        return
+                      }
+
+                      setPendingItemId(item.id)
+                    }}
                   />
 
                   <label htmlFor={`build-item-${item.id}`} className="text-sm">
@@ -78,6 +96,41 @@ export function BuildItemAssignment({
           </div>
         </CollapsibleContent>
       </Collapsible>
+      <AlertDialog
+        open={pendingItemId !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPendingItemId(null)
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Item aus Build entfernen?</AlertDialogTitle>
+
+            <AlertDialogDescription>
+              Das Item wird aus diesem Build entfernt. Alle Tier-Konfigurationen
+              dieses Items in diesem Build werden ebenfalls gelöscht.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingItemId) {
+                  handleCheckedChange(pendingItemId, false)
+                }
+
+                setPendingItemId(null)
+              }}
+            >
+              Entfernen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

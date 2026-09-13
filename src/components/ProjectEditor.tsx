@@ -89,7 +89,50 @@ export function ProjectEditor() {
     }))
   }
 
-  function handleRemoveItem(itemId: string) {
+  function handleDeleteItem(itemId: string) {
+    setConfig((currentConfig) => ({
+      ...currentConfig,
+
+      // Item vollständig aus dem Projekt entfernen
+      items: currentConfig.items.filter((item) => item.id !== itemId),
+
+      // Referenzen aus ALLEN Builds entfernen
+      builds: currentConfig.builds.map((build) => ({
+        ...build,
+
+        itemIds: build.itemIds.filter((id) => id !== itemId),
+
+        tiers: build.tiers.map((tier) => ({
+          ...tier,
+
+          items: tier.items.filter((item) => item.itemId !== itemId),
+        })),
+      })),
+    }))
+  }
+
+  function handleAddItemToBuild(itemId: string) {
+    setConfig((currentConfig) => ({
+      ...currentConfig,
+
+      builds: currentConfig.builds.map((build) => {
+        if (build.id !== currentConfig.activeBuildId) {
+          return build
+        }
+
+        if (build.itemIds.includes(itemId)) {
+          return build
+        }
+
+        return {
+          ...build,
+          itemIds: [...build.itemIds, itemId],
+        }
+      }),
+    }))
+  }
+
+  function handleRemoveItemFromBuild(itemId: string) {
     setConfig((currentConfig) => ({
       ...currentConfig,
 
@@ -100,8 +143,12 @@ export function ProjectEditor() {
 
         return {
           ...build,
+
+          itemIds: build.itemIds.filter((id) => id !== itemId),
+
           tiers: build.tiers.map((tier) => ({
             ...tier,
+
             items: tier.items.filter((item) => item.itemId !== itemId),
           })),
         }
@@ -136,19 +183,8 @@ export function ProjectEditor() {
           <BuildItemAssignment
             items={config.items}
             activeBuild={activeBuild}
-            onChange={(itemIds) => {
-              setConfig((currentConfig) => ({
-                ...currentConfig,
-                builds: currentConfig.builds.map((build) =>
-                  build.id === currentConfig.activeBuildId
-                    ? {
-                        ...build,
-                        itemIds,
-                      }
-                    : build
-                ),
-              }))
-            }}
+            onAddItem={handleAddItemToBuild}
+            onRemoveItem={handleRemoveItemFromBuild}
           />
         )}
 
@@ -174,7 +210,7 @@ export function ProjectEditor() {
           items={config.items}
           onItemChange={handleItemChange}
           onAddItem={handleAddItem}
-          onRemoveItem={handleRemoveItem}
+          onRemoveItem={handleDeleteItem}
         />
 
         <ScriptManager config={config} />
