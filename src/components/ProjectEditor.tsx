@@ -11,7 +11,9 @@ import { ItemListEditor } from "@/components/item/ItemListEditor"
 import { ScriptManager } from "@/components/script/ScriptManager"
 
 import { generateScriptFiles } from "@/generators/scriptFilesGenerator"
+
 import { BuildManager } from "./build/BuildManager"
+import { BuildItemAssignment } from "./build/BuildItemAssignment"
 
 const initialConfig: ProjectConfig = {
   items: initialItems,
@@ -122,6 +124,26 @@ export function ProjectEditor() {
             }}
           />
         </section>
+
+        {activeBuild && (
+          <BuildItemAssignment
+            items={config.items}
+            activeBuild={activeBuild}
+            onChange={(itemIds) => {
+              setConfig((currentConfig) => ({
+                ...currentConfig,
+                builds: currentConfig.builds.map((build) =>
+                  build.id === currentConfig.activeBuildId
+                    ? {
+                        ...build,
+                        itemIds,
+                      }
+                    : build
+                ),
+              }))
+            }}
+          />
+        )}
 
         <TierListEditor
           items={buildItems}
