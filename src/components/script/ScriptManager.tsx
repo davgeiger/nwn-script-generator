@@ -100,7 +100,7 @@ export function ScriptManager({ config }: ScriptManagerProps) {
             }
           }}
         >
-          Speichern
+          Herunterladen
         </Button>
       </div>
       <div className="flex items-center gap-2">
@@ -159,7 +159,7 @@ export function ScriptManager({ config }: ScriptManagerProps) {
               }
             }}
           >
-            Speichern
+            Herunterladen
           </Button>
         </div>
       )}

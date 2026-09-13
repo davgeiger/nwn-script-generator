@@ -123,15 +123,6 @@ export function ProjectEditor() {
           />
         </section>
 
-        <ScriptManager config={config} />
-
-        <ItemListEditor
-          items={config.items}
-          onItemChange={handleItemChange}
-          onAddItem={handleAddItem}
-          onRemoveItem={handleRemoveItem}
-        />
-
         <TierListEditor
           items={buildItems}
           tiers={activeBuild.tiers}
@@ -149,6 +140,15 @@ export function ProjectEditor() {
             }))
           }}
         />
+
+        <ItemListEditor
+          items={config.items}
+          onItemChange={handleItemChange}
+          onAddItem={handleAddItem}
+          onRemoveItem={handleRemoveItem}
+        />
+
+        <ScriptManager config={config} />
       </div>
     </>
   )
