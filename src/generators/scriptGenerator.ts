@@ -4,6 +4,9 @@ import { resolveLevelState, resolveTierState } from "@/resolvers/tierResolver"
 import type { ProjectConfig } from "@/types/config"
 import { generateItemGrantCode } from "./itemGenerator"
 
+import { getActiveBuild, getBuildItems } from "@/resolvers/buildResolver"
+import type { LevelItem } from "@/types/items"
+
 const getPlayerItemByTagFunction = [
   "object GetPlayerItemByTag(object oPC, string sTag)",
   "{",
@@ -27,19 +30,25 @@ export function generateResolvedScript(
   config: ProjectConfig,
   tierNumber: number
 ): string {
-  const targetTier = config.tiers.find((tier) => tier.tier === tierNumber)
+  const activeBuild = getActiveBuild(config)
+
+  if (!activeBuild) {
+    return ""
+  }
+
+  const items = getBuildItems(config, activeBuild)
+
+  const tiers = activeBuild.tiers
+
+  const targetTier = tiers.find((tier) => tier.tier === tierNumber)
 
   if (!targetTier) {
     return ""
   }
 
-  const resolvedTier = resolveTierState(config.tiers, targetTier)
+  const resolvedTier = resolveTierState(tiers, targetTier)
 
-  const tierCode = generateResolvedTierCode(
-    resolvedTier,
-    config.items,
-    config.tiers
-  )
+  const tierCode = generateResolvedTierCode(resolvedTier, items, tiers)
 
   return [
     "void UpdateLevelItems(object oPC)",
@@ -52,20 +61,26 @@ export function generateResolvedScript(
 }
 
 export function generateLevelScript(config: ProjectConfig): string {
-  const itemGrantBlocks = generateItemGrantBlocks(config)
-  const levels = Array.from(
-    new Set(config.tiers.map((tier) => tier.level))
-  ).sort((a, b) => b - a)
+  const activeBuild = getActiveBuild(config)
+
+  if (!activeBuild) {
+    return ""
+  }
+
+  const items = getBuildItems(config, activeBuild)
+
+  const tiers = activeBuild.tiers
+
+  const itemGrantBlocks = generateItemGrantBlocks(items)
+  const levels = Array.from(new Set(tiers.map((tier) => tier.level))).sort(
+    (a, b) => b - a
+  )
 
   const resolvedLevelBlocks = levels
     .map((level) => {
-      const resolvedState = resolveLevelState(config.tiers, level)
+      const resolvedState = resolveLevelState(tiers, level)
 
-      const code = generateResolvedTierCode(
-        resolvedState,
-        config.items,
-        config.tiers
-      )
+      const code = generateResolvedTierCode(resolvedState, items, tiers)
 
       if (!code) {
         return undefined
@@ -122,18 +137,18 @@ export function generateLevelScript(config: ProjectConfig): string {
   ].join("\n")
 }
 
-function generateItemGrantBlocks(config: ProjectConfig): string {
+function generateItemGrantBlocks(items: LevelItem[]): string {
   const grantLevels = Array.from(
-    new Set(config.items.map((item) => item.grantLevel))
+    new Set(items.map((item) => item.grantLevel))
   ).sort((a, b) => a - b)
 
   return grantLevels
     .map((grantLevel) => {
-      const items = config.items.filter(
+      const itemsForLevel = items.filter(
         (item) => item.grantLevel === grantLevel
       )
 
-      const itemCode = items
+      const itemCode = itemsForLevel
         .map((item, index) =>
           generateItemGrantCode(item, `oGrantItem${index + 1}`)
         )

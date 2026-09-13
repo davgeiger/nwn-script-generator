@@ -89,7 +89,7 @@ export function TierListEditor({
 
   return (
     <div className="space-y-3">
-      <h1 className="text-lg font-semibold">Tier Editor</h1>
+      <h2 className="text-lg font-semibold">Tier Editor</h2>
       <Collapsible open={open} onOpenChange={setOpen} className="space-y-3">
         <CollapsibleTrigger
           render={

@@ -164,7 +164,7 @@ export function TierEditor({ tier, tiers, items, onChange }: TierEditorProps) {
 
           return (
             <div key={item.id} className="space-y-4 rounded-md border p-4">
-              <h2 className="font-semibold">{item.name}</h2>
+              <h3 className="font-semibold">{item.name}</h3>
 
               <ResolvedTierOverview resolvedItem={resolvedItem} />
 

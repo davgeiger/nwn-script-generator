@@ -27,7 +27,7 @@ export function ItemListEditor({
 
   return (
     <div className="space-y-3">
-      <h1 className="text-lg font-semibold">Item Editor</h1>
+      <h2 className="text-lg font-semibold">Item Editor</h2>
       <Collapsible open={isItemEditorOpen} onOpenChange={setIsItemEditorOpen}>
         <CollapsibleTrigger
           render={

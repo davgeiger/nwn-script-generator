@@ -1,5 +1,5 @@
+import type { BuildConfig } from "@/types/builds"
 import type { LevelItem } from "@/types/items"
-import type { TierConfig } from "@/types/tiers"
 
 export type ScriptConfig = {
   updateItemsName: string
@@ -9,6 +9,7 @@ export type ScriptConfig = {
 
 export type ProjectConfig = {
   items: LevelItem[]
-  tiers: TierConfig[]
+  builds: BuildConfig[]
+  activeBuildId: string
   scripts: ScriptConfig
 }
