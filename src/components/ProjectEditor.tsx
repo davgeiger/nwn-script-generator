@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { loadProject, saveProject } from "@/storage/projectStorage"
 
 import { getActiveBuild, getBuildItems } from "@/resolvers/buildResolver"
@@ -7,14 +7,26 @@ import { initialItems } from "@/data/items"
 import type { ProjectConfig } from "@/types/config"
 import type { LevelItem } from "@/types/items"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
 import { TierListEditor } from "@/components/tier/TierListEditor"
 import { ItemListEditor } from "@/components/item/ItemListEditor"
 import { ScriptManager } from "@/components/script/ScriptManager"
 
-import { generateScriptFiles } from "@/generators/scriptFilesGenerator"
-
 import { BuildManager } from "./build/BuildManager"
 import { BuildItemAssignment } from "./build/BuildItemAssignment"
+import { Button } from "./ui/button"
+import { importProject } from "@/storage/importProject"
+import { exportProject } from "@/storage/exportProject"
 
 const initialConfig: ProjectConfig = {
   items: initialItems,
@@ -49,8 +61,7 @@ export function ProjectEditor() {
   const [config, setConfig] = useState<ProjectConfig>(() => {
     return loadProject() ?? initialConfig
   })
-
-  console.log(generateScriptFiles(config))
+  const [pendingImport, setPendingImport] = useState<ProjectConfig | null>(null)
 
   const activeBuild = getActiveBuild(config)
 
@@ -63,6 +74,8 @@ export function ProjectEditor() {
   }
 
   const buildItems = getBuildItems(config, activeBuild)
+
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   function handleItemChange(updatedItem: LevelItem) {
     setConfig((currentConfig) => ({
@@ -158,7 +171,45 @@ export function ProjectEditor() {
 
   return (
     <>
-      <h1 className="mb-1 text-xl font-bold">Item Skript Generator</h1>
+      <div className="mb-3">
+        {" "}
+        <h1 className="mb-1 text-xl font-bold">Item Skript Generator</h1>
+        <div className="flex gap-1">
+          <Button
+            variant="outline"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Importieren
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={async (event) => {
+              const file = event.target.files?.[0]
+
+              if (!file) {
+                return
+              }
+
+              try {
+                const importedConfig = await importProject(file)
+
+                setPendingImport(importedConfig)
+              } catch (error) {
+                console.error(error)
+              }
+
+              event.target.value = ""
+            }}
+          />
+          <Button variant="outline" onClick={() => exportProject(config)}>
+            Exportieren
+          </Button>
+        </div>
+      </div>
+
       <div className="mx-auto max-w-6xl space-y-8">
         <section className="space-y-3">
           <BuildManager
@@ -215,6 +266,42 @@ export function ProjectEditor() {
 
         <ScriptManager config={config} />
       </div>
+      <AlertDialog
+        open={pendingImport !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setPendingImport(null)
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Projekt importieren?</AlertDialogTitle>
+
+            <AlertDialogDescription>
+              Der aktuelle Projektstand wird durch die importierte Konfiguration
+              ersetzt. Nicht exportierte Änderungen können dadurch verloren
+              gehen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={() => {
+                if (pendingImport) {
+                  setConfig(pendingImport)
+                }
+
+                setPendingImport(null)
+              }}
+            >
+              Importieren
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
