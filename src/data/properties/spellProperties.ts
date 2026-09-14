@@ -7,6 +7,7 @@ import {
   spellSchoolOptions,
 } from "@/data/options/propertyOptions"
 import { castSpellOptions } from "@/data/options/castSpellOptions"
+import { bodyArmorSlots } from "./bodyArmorslots"
 
 export const spellProperties: ItemPropertyDefinition[] = [
   // spellImmunitySpecific
@@ -15,7 +16,7 @@ export const spellProperties: ItemPropertyDefinition[] = [
     name: "Immunität gegen bestimmten Zauber",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -46,7 +47,7 @@ export const spellProperties: ItemPropertyDefinition[] = [
     name: "Immunität gegen Zauberschule",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -77,7 +78,7 @@ export const spellProperties: ItemPropertyDefinition[] = [
     name: "Immunität gegen Zauberstufen",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -107,7 +108,7 @@ export const spellProperties: ItemPropertyDefinition[] = [
     name: "Arkane Zauberpatzerchance",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -136,7 +137,7 @@ export const spellProperties: ItemPropertyDefinition[] = [
     name: "Zusätzlicher Zauberplatz",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -175,7 +176,7 @@ export const spellProperties: ItemPropertyDefinition[] = [
     allowedSlots: [
       "weapon",
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",

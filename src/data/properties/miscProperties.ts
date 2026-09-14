@@ -11,6 +11,7 @@ import {
   reducedWeightOptions,
   weightIncreaseOptions,
 } from "@/data/options/propertyOptions"
+import { bodyArmorSlots } from "./bodyArmorslots"
 
 export const miscProperties: ItemPropertyDefinition[] = [
   // abilityBonus
@@ -19,7 +20,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     name: "Attributsbonus",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -89,7 +90,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     name: "Fertigkeitsbonus",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -270,7 +271,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     allowedSlots: [
       "weapon",
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -301,7 +302,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     allowedSlots: [
       "weapon",
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -338,7 +339,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     name: "Bonustalent",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -369,7 +370,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     allowedSlots: [
       "weapon",
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -390,7 +391,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     allowedSlots: [
       "weapon",
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -421,7 +422,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     allowedSlots: [
       "weapon",
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -452,7 +453,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     allowedSlots: [
       "weapon",
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -483,7 +484,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     allowedSlots: [
       "weapon",
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -514,7 +515,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
     allowedSlots: [
       "weapon",
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",

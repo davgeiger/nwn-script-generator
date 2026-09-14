@@ -7,6 +7,7 @@ import {
   physicalDamageTypeOptions,
   racialTypeOptions,
 } from "@/data/options/propertyOptions"
+import { bodyArmorSlots } from "./bodyArmorslots"
 
 export const defensiveProperties: ItemPropertyDefinition[] = [
   // armorClassBonus
@@ -15,7 +16,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Rüstungsklassenbonus",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -45,7 +46,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "RK-Bonus gegen Gesinnungsgruppe",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -84,7 +85,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "RK-Bonus gegen Rasse",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -123,7 +124,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "RK-Bonus gegen Gesinnung",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -162,7 +163,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "RK-Bonus gegen Schadensart",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -201,7 +202,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Rettungswurfbonus",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -281,7 +282,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Schadensresistenz",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -369,7 +370,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Schadensimmunität",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -483,7 +484,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Immunität",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -564,7 +565,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Zauberresistenz",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -654,7 +655,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Schadensreduktion",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -843,7 +844,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Schadensverwundbarkeit",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -880,7 +881,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Regeneration",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -911,7 +912,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Bewegungsfreiheit",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -932,7 +933,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Verbessertes Entrinnen",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -953,7 +954,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Dunkelsicht",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
@@ -974,7 +975,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
     name: "Wahrer Blick",
     allowedSlots: [
       "shield",
-      "armor",
+      ...bodyArmorSlots,
       "helmet",
       "cloak",
       "boots",
