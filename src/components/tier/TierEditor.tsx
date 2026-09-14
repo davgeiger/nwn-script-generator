@@ -48,6 +48,8 @@ export function TierEditor({ tier, tiers, items, onChange }: TierEditorProps) {
 
   const resolvedTier = resolveTierState(tiers, tier)
 
+  const availableItems = items.filter((item) => item.grantLevel <= tier.level)
+
   function commitLevel() {
     const level = Number(levelInput)
 
@@ -153,7 +155,7 @@ export function TierEditor({ tier, tiers, items, onChange }: TierEditorProps) {
       </CardHeader>
 
       <CardContent className="space-y-8">
-        {items.map((item) => {
+        {availableItems.map((item) => {
           const itemConfig = tier.items.find(
             (tierItem) => tierItem.itemId === item.id
           )
