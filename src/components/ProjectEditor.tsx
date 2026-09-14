@@ -7,17 +7,6 @@ import { initialItems } from "@/data/items"
 import type { ProjectConfig } from "@/types/config"
 import type { LevelItem } from "@/types/items"
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-
 import { TierListEditor } from "@/components/tier/TierListEditor"
 import { ItemListEditor } from "@/components/item/ItemListEditor"
 import { ScriptManager } from "@/components/script/ScriptManager"
@@ -27,6 +16,7 @@ import { BuildItemAssignment } from "./build/BuildItemAssignment"
 import { Button } from "./ui/button"
 import { importProject } from "@/storage/importProject"
 import { exportProject } from "@/storage/exportProject"
+import { ConfirmDialog } from "./common/ConfirmDialog"
 
 const initialConfig: ProjectConfig = {
   items: initialItems,
@@ -273,68 +263,32 @@ export function ProjectEditor() {
 
         <ScriptManager config={config} />
       </div>
-      <AlertDialog
+      <ConfirmDialog
         open={pendingImport !== null}
         onOpenChange={(open) => {
           if (!open) {
             setPendingImport(null)
           }
         }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Projekt importieren?</AlertDialogTitle>
-
-            <AlertDialogDescription>
-              Der aktuelle Projektstand wird durch die importierte Konfiguration
-              ersetzt. Nicht exportierte Änderungen können dadurch verloren
-              gehen.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-
-          <AlertDialogFooter>
-            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-
-            <AlertDialogAction
-              onClick={() => {
-                if (pendingImport) {
-                  setConfig(pendingImport)
-                }
-
-                setPendingImport(null)
-              }}
-            >
-              Importieren
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-      <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Projekt wirklich zurücksetzen?</AlertDialogTitle>
-
-            <AlertDialogDescription>
-              Alle aktuellen Änderungen werden verworfen und das Projekt wird
-              auf die Standardkonfiguration zurückgesetzt. Nicht exportierte
-              Änderungen können dabei verloren gehen.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-
-          <AlertDialogFooter>
-            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-
-            <AlertDialogAction
-              onClick={() => {
-                setConfig(structuredClone(initialConfig))
-                setResetDialogOpen(false)
-              }}
-            >
-              Zurücksetzen
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        title="Projekt importieren?"
+        description="Der aktuelle Projektstand wird durch die importierte Konfiguration ersetzt. Nicht exportierte Änderungen können dadurch verloren gehen."
+        confirmLabel="Importieren"
+        onConfirm={() => {
+          if (pendingImport) {
+            setConfig(pendingImport)
+          }
+        }}
+      />
+      <ConfirmDialog
+        open={resetDialogOpen}
+        onOpenChange={setResetDialogOpen}
+        title="Projekt wirklich zurücksetzen?"
+        description="Alle aktuellen Änderungen werden verworfen und das Projekt wird auf die Standardkonfiguration zurückgesetzt. Nicht exportierte Änderungen können dabei verloren gehen."
+        confirmLabel="Zurücksetzen"
+        onConfirm={() => {
+          setConfig(structuredClone(initialConfig))
+        }}
+      />
     </>
   )
 }

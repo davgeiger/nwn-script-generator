@@ -9,19 +9,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../ui/alert-dialog"
-
 import type { BuildConfig } from "@/types/builds"
 import { Input } from "../ui/input"
+import { ConfirmDialog } from "../common/ConfirmDialog"
 
 type BuildManagerProps = {
   builds: BuildConfig[]
@@ -228,33 +218,14 @@ export function BuildManager({
           Entfernen
         </Button>
       </div>
-      <AlertDialog open={removeDialogOpen} onOpenChange={setRemoveDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Build wirklich entfernen?</AlertDialogTitle>
-
-            <AlertDialogDescription>
-              Der Build „{activeBuild?.name}“ wird vollständig entfernt. Dabei
-              werden auch alle Tier-Konfigurationen dieses Builds gelöscht. Die
-              globalen Items bleiben erhalten. Dieser Vorgang kann nicht
-              rückgängig gemacht werden.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-
-          <AlertDialogFooter>
-            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-
-            <AlertDialogAction
-              onClick={() => {
-                handleRemoveBuild()
-                setRemoveDialogOpen(false)
-              }}
-            >
-              Entfernen
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmDialog
+        open={removeDialogOpen}
+        onOpenChange={setRemoveDialogOpen}
+        title="Build wirklich entfernen?"
+        description={`Der Build „${activeBuild?.name}“ wird vollständig entfernt. Dabei werden auch alle Tier-Konfigurationen dieses Builds gelöscht. Die globalen Items bleiben erhalten.`}
+        confirmLabel="Entfernen"
+        onConfirm={handleRemoveBuild}
+      />
     </>
   )
 }
