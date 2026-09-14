@@ -77,7 +77,7 @@ export function ProjectEditor() {
     }))
   }
 
-  function handleAddItem() {
+  function handleAddItem(): string {
     const newItem: LevelItem = {
       id: crypto.randomUUID(),
       name: "Neues Item",
@@ -91,6 +91,8 @@ export function ProjectEditor() {
       ...currentConfig,
       items: [...currentConfig.items, newItem],
     }))
+
+    return newItem.id
   }
 
   function handleDeleteItem(itemId: string) {

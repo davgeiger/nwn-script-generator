@@ -11,11 +11,18 @@ import {
 
 import { useState } from "react"
 import { ConfirmDialog } from "../common/ConfirmDialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"
 
 type ItemListEditorProps = {
   items: LevelItem[]
   onItemChange: (item: LevelItem) => void
-  onAddItem: () => void
+  onAddItem: () => string
   onRemoveItem: (itemId: string) => void
 }
 
@@ -27,6 +34,14 @@ export function ItemListEditor({
 }: ItemListEditorProps) {
   const [isItemEditorOpen, setIsItemEditorOpen] = useState(false)
   const [pendingItemId, setPendingItemId] = useState<string | null>(null)
+  const [selectedItemId, setSelectedItemId] = useState(items[0]?.id ?? "")
+
+  const selectedItem = items.find((item) => item.id === selectedItemId) ?? null
+
+  const itemOptions = items.map((item) => ({
+    value: item.id,
+    label: item.name,
+  }))
 
   return (
     <>
@@ -49,31 +64,61 @@ export function ItemListEditor({
 
           <CollapsibleContent className="pt-4">
             <div className="space-y-4">
-              <div className="flex items-center">
-                <Button onClick={onAddItem}>+ Item hinzufügen</Button>
+              <div className="flex items-center gap-2">
+                <Select
+                  items={itemOptions}
+                  value={selectedItemId}
+                  onValueChange={(value) => {
+                    if (value === null) {
+                      return
+                    }
+
+                    setSelectedItemId(value)
+                  }}
+                >
+                  <SelectTrigger className="w-64">
+                    <SelectValue placeholder="Item auswählen" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    {itemOptions.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  onClick={() => {
+                    const newItemId = onAddItem()
+                    setSelectedItemId(newItemId)
+                  }}
+                >
+                  + Item hinzufügen
+                </Button>
               </div>
 
               <div className="space-y-4">
-                {items.map((item) => (
-                  <Card key={item.id}>
+                {selectedItem && (
+                  <Card>
                     <CardHeader>
-                      <CardTitle>{item.name}</CardTitle>
+                      <CardTitle>{selectedItem.name}</CardTitle>
                     </CardHeader>
 
                     <CardContent className="space-y-4">
-                      <ItemEditor item={item} onChange={onItemChange} />
+                      <ItemEditor item={selectedItem} onChange={onItemChange} />
 
                       <div className="flex justify-end">
                         <Button
                           variant="destructive"
-                          onClick={() => setPendingItemId(item.id)}
+                          onClick={() => setPendingItemId(selectedItem.id)}
                         >
                           Item entfernen
                         </Button>
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                )}
               </div>
             </div>
           </CollapsibleContent>
