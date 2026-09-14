@@ -54,15 +54,15 @@ export function ProjectEditor() {
 
   const activeBuild = getActiveBuild(config)
 
+  useEffect(() => {
+    saveProject(config)
+  }, [config])
+
   if (!activeBuild) {
     return null
   }
 
   const buildItems = getBuildItems(config, activeBuild)
-
-  useEffect(() => {
-    saveProject(config)
-  }, [config])
 
   function handleItemChange(updatedItem: LevelItem) {
     setConfig((currentConfig) => ({

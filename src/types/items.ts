@@ -9,6 +9,8 @@ export type ItemSlot =
   | "gloves"
   | "amulet"
   | "ring"
+  | "clothing"
+  | "robe"
 
 export type WeaponCategory = "melee" | "ranged"
 

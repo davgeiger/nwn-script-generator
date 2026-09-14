@@ -16,6 +16,8 @@ export const itemSlots: ItemSlotOption[] = [
   { value: "gloves", label: "Handschuhe" },
   { value: "amulet", label: "Amulett" },
   { value: "ring", label: "Ring" },
+  { value: "clothing", label: "Kleidung" },
+  { value: "robe", label: "Robe" },
 ]
 
 export const inventorySlotMap: Partial<Record<ItemSlot, string>> = {

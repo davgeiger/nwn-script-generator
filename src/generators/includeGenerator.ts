@@ -1,7 +1,16 @@
+import { getActiveBuild, getBuildItems } from "@/resolvers/buildResolver"
 import type { ProjectConfig } from "@/types/config"
 
 export function generateLevelItemsInclude(config: ProjectConfig): string {
-  const removeItems = config.items
+  const activeBuild = getActiveBuild(config)
+
+  if (!activeBuild) {
+    return ""
+  }
+
+  const items = getBuildItems(config, activeBuild)
+
+  const removeItems = items
     .map((item) => `    RemoveLevelItem(oPC, "${item.tag}");`)
     .join("\n")
 

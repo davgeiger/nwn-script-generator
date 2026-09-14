@@ -2,6 +2,8 @@ import { inventorySlotMap } from "@/data/itemSlots"
 import type { ProjectConfig } from "@/types/config"
 import type { LevelItem } from "@/types/items"
 
+import { getActiveBuild, getBuildItems } from "@/resolvers/buildResolver"
+
 function generateEquipmentState(item: LevelItem, index: number): string {
   if (item.slot === "ring") {
     return [
@@ -65,7 +67,13 @@ function generateRestoreArguments(item: LevelItem, index: number): string[] {
 }
 
 export function generateRebuildScript(config: ProjectConfig): string {
-  const items = config.items
+  const activeBuild = getActiveBuild(config)
+
+  if (!activeBuild) {
+    return ""
+  }
+
+  const items = getBuildItems(config, activeBuild)
 
   const equipmentStates = items
     .map((item, index) => generateEquipmentState(item, index + 1))
