@@ -62,6 +62,7 @@ export function ProjectEditor() {
     return loadProject() ?? initialConfig
   })
   const [pendingImport, setPendingImport] = useState<ProjectConfig | null>(null)
+  const [resetDialogOpen, setResetDialogOpen] = useState(false)
 
   const activeBuild = getActiveBuild(config)
 
@@ -207,6 +208,12 @@ export function ProjectEditor() {
           <Button variant="outline" onClick={() => exportProject(config)}>
             Exportieren
           </Button>
+          <Button
+            variant="destructive"
+            onClick={() => setResetDialogOpen(true)}
+          >
+            Projekt zurücksetzen
+          </Button>
         </div>
       </div>
 
@@ -298,6 +305,32 @@ export function ProjectEditor() {
               }}
             >
               Importieren
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Projekt wirklich zurücksetzen?</AlertDialogTitle>
+
+            <AlertDialogDescription>
+              Alle aktuellen Änderungen werden verworfen und das Projekt wird
+              auf die Standardkonfiguration zurückgesetzt. Nicht exportierte
+              Änderungen können dabei verloren gehen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={() => {
+                setConfig(structuredClone(initialConfig))
+                setResetDialogOpen(false)
+              }}
+            >
+              Zurücksetzen
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

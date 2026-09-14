@@ -9,6 +9,17 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog"
+
 import type { BuildConfig } from "@/types/builds"
 import { Input } from "../ui/input"
 
@@ -29,6 +40,7 @@ export function BuildManager({
 
   const [isRenaming, setIsRenaming] = useState(false)
   const [buildName, setBuildName] = useState("")
+  const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
 
   const renameInputRef = useRef<HTMLInputElement>(null)
 
@@ -210,12 +222,39 @@ export function BuildManager({
 
         <Button
           variant="destructive"
-          onClick={handleRemoveBuild}
+          onClick={() => setRemoveDialogOpen(true)}
           disabled={builds.length <= 1}
         >
           Entfernen
         </Button>
       </div>
+      <AlertDialog open={removeDialogOpen} onOpenChange={setRemoveDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Build wirklich entfernen?</AlertDialogTitle>
+
+            <AlertDialogDescription>
+              Der Build „{activeBuild?.name}“ wird vollständig entfernt. Dabei
+              werden auch alle Tier-Konfigurationen dieses Builds gelöscht. Die
+              globalen Items bleiben erhalten. Dieser Vorgang kann nicht
+              rückgängig gemacht werden.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={() => {
+                handleRemoveBuild()
+                setRemoveDialogOpen(false)
+              }}
+            >
+              Entfernen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
