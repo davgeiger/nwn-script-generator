@@ -114,6 +114,7 @@ export function generateLevelScript(config: ProjectConfig): string {
 
   return [
     '#include "x2_inc_itemprop"',
+    '#include "inc_lvlitems"',
     "",
     getPlayerItemByTagFunction,
     "",

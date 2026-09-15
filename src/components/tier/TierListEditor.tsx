@@ -24,7 +24,7 @@ export function TierListEditor({
   onTiersChange,
 }: TierListEditorProps) {
   const [selectedTierId, setSelectedTierId] = useState(tiers[0]?.id ?? "")
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
 
   const selectedTier = tiers.find((tier) => tier.id === selectedTierId)
 

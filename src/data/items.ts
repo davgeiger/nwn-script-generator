@@ -22,10 +22,24 @@ export const initialItems: LevelItem[] = [
     physicalDamageTypes: ["bludgeoning"],
   },
   {
-    id: "shield",
-    name: "Schild",
-    resRef: "lvl_shield",
-    tag: "LVL_SHIELD",
+    id: "shield_s",
+    name: "Kleiner Schild",
+    resRef: "lvl_shield_s",
+    tag: "LVL_SHIELD_S",
+    slot: "shield",
+  },
+  {
+    id: "shield_m",
+    name: "Großer Schild",
+    resRef: "lvl_shield_m",
+    tag: "LVL_SHIELD_M",
+    slot: "shield",
+  },
+  {
+    id: "shield_l",
+    name: "Turmschild",
+    resRef: "lvl_shield_l",
+    tag: "LVL_SHIELD_L",
     slot: "shield",
   },
   {

@@ -115,13 +115,35 @@ export function generatePropertyStatement(
 
 export function generateResolvedPropertyStatement(
   config: ItemPropertyConfig,
-  itemVariable = "oItem"
+  itemVariable = "oItem",
+  pcVariable = "oPC"
 ): string | undefined {
+  return generateValidatedPropertyStatement(config, itemVariable, pcVariable)
+}
+
+export function generateValidatedPropertyStatement(
+  config: ItemPropertyConfig,
+  itemVariable = "oItem",
+  pcVariable = "oPC"
+): string | undefined {
+  const definition = itemProperties.find(
+    (property) => property.id === config.propertyId
+  )
+
+  if (!definition) {
+    return undefined
+  }
+
   const expression = generatePropertyExpression(config)
 
   if (!expression) {
     return undefined
   }
 
-  return `IPSafeAddItemProperty(${itemVariable}, ${expression});`
+  const propertyType = getPropertyType(definition, config.values)
+
+  return [
+    `IPSafeAddItemProperty(${itemVariable}, ${expression});`,
+    `LVL_ValidateItemProperty(${pcVariable}, ${itemVariable}, ${propertyType}, "${definition.name}");`,
+  ].join("\n")
 }
