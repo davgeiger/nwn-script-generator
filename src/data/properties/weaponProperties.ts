@@ -461,6 +461,7 @@ export const weaponProperties: ItemPropertyDefinition[] = [
     name: "Visueller Waffeneffekt",
     allowedSlots: ["weapon"],
     allowedWeaponCategories: ["melee"],
+    excludedItemIds: ["staff"],
     parameters: [
       {
         id: "effect",

@@ -41,6 +41,10 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
         return false
       }
 
+      if (property.excludedItemIds?.includes(item.id)) {
+        return false
+      }
+
       if (property.allowedWeaponCategories) {
         if (!item.weaponCategory) {
           return false
@@ -68,7 +72,7 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
 
       return true
     })
-  }, [item.slot, item.weaponCategory, item.physicalDamageTypes])
+  }, [item.id, item.slot, item.weaponCategory, item.physicalDamageTypes])
 
   const sortedAvailableProperties = useMemo(() => {
     return [...availableProperties].sort((a, b) =>

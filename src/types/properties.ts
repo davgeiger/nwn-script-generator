@@ -50,9 +50,10 @@ export type ItemPropertyDefinition = {
   id: string
   name: string
   allowedSlots: ItemSlot[]
-
   allowedWeaponCategories?: WeaponCategory[]
   allowedPhysicalDamageTypes?: PhysicalDamageType[]
+
+  excludedItemIds?: string[]
 
   parameters: PropertyParameter[]
   keyParameters?: string[]
