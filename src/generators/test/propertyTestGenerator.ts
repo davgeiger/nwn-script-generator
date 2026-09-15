@@ -19,6 +19,9 @@ import type { ProjectConfig } from "@/types/config"
 import type { GeneratedScriptFile } from "@/types/scripts"
 
 const TEST_BATCH_SIZE = 25
+const MAX_PROPERTIES_PER_TEST_ITEM = 250
+
+const weaponTestProperties = [...weaponProperties, ...onHitProperties]
 
 function chunkArray<T>(values: T[], size: number): T[][] {
   const chunks: T[][] = []
@@ -86,24 +89,35 @@ function getTestPropertyLabel(
   return `${definition.name} - ${labels.join(" / ")}`
 }
 
-function generateBatchScript(tests: string[], itemTag: string): string {
+function generateBatchScript(
+  tests: string[],
+  itemTag: string,
+  itemGroup: number
+): string {
   return [
     '#include "x2_inc_itemprop"',
+    "",
+    generateFindTestItemFunction(),
     "",
     "void main()",
     "{",
     indent("object oPC = OBJECT_SELF;"),
-    indent(`object oItem = GetItemPossessedBy(oPC, "${itemTag}");`),
+    indent(`object oItem = FindTestItem(oPC, "${itemTag}", ${itemGroup});`),
     "",
     indent("if (!GetIsObjectValid(oItem))"),
     indent("{"),
-    indent('SendMessageToPC(oPC, "Testitem nicht gefunden.");', 8),
+    indent(
+      `SendMessageToPC(oPC, "Testitem ${itemTag} / Gruppe ${itemGroup} nicht gefunden.");`,
+      8
+    ),
     indent("return;", 8),
     indent("}"),
     "",
     indent(tests.join("\n\n")),
     "",
-    indent('SendMessageToPC(oPC, "Test-Batch abgeschlossen.");'),
+    indent(
+      `SendMessageToPC(oPC, "Test-Batch Gruppe ${itemGroup} abgeschlossen.");`
+    ),
     "}",
   ].join("\n")
 }
@@ -115,31 +129,23 @@ function generateCategoryScripts(
 ): GeneratedScriptFile[] {
   const tests = generatePropertyTests(definitions)
 
-  const batches = chunkArray(tests, TEST_BATCH_SIZE)
+  const itemGroups = chunkArray(tests, MAX_PROPERTIES_PER_TEST_ITEM)
 
-  return batches.map((batch, index) => ({
-    filename: `lvl_t_${name}${index + 1}.nss`,
-    content: generateBatchScript(batch, itemTag),
-  }))
+  return itemGroups.flatMap((itemTests, groupIndex) => {
+    const itemGroup = groupIndex + 1
+
+    const batches = chunkArray(itemTests, TEST_BATCH_SIZE)
+
+    return batches.map((batch, batchIndex) => ({
+      filename: `lvl_t_${name}_g${itemGroup}_${batchIndex + 1}.nss`,
+
+      content: generateBatchScript(batch, itemTag, itemGroup),
+    }))
+  })
 }
 
 function getItemBySlot(config: ProjectConfig, slot: string) {
   return config.items.find((item) => item.slot === slot)
-}
-
-function generateEnsureItem(
-  variableName: string,
-  tag: string,
-  resRef: string
-): string {
-  return [
-    `object ${variableName} = GetItemPossessedBy(oPC, "${tag}");`,
-    "",
-    `if (!GetIsObjectValid(${variableName}))`,
-    "{",
-    indent(`${variableName} = CreateItemOnObject("${resRef}", oPC);`),
-    "}",
-  ].join("\n")
 }
 
 export function generatePropertyTestScripts(
@@ -155,15 +161,13 @@ export function generatePropertyTestScripts(
   }
 
   const testScripts: GeneratedScriptFile[] = [
-    ...generateCategoryScripts("weapon", weaponProperties, weapon.tag),
+    ...generateCategoryScripts("we", weaponTestProperties, weapon.tag),
 
-    ...generateCategoryScripts("onhit", onHitProperties, weapon.tag),
+    ...generateCategoryScripts("de", defensiveProperties, shield.tag),
 
-    ...generateCategoryScripts("def", defensiveProperties, shield.tag),
+    ...generateCategoryScripts("mi", miscProperties, armor.tag),
 
-    ...generateCategoryScripts("misc", miscProperties, armor.tag),
-
-    ...generateCategoryScripts("spell", spellProperties, cloak.tag),
+    ...generateCategoryScripts("sp", spellProperties, cloak.tag),
   ]
 
   const mainScript: GeneratedScriptFile = {
@@ -185,20 +189,52 @@ function generateMainScript(
   armor: { tag: string; resRef: string },
   cloak: { tag: string; resRef: string }
 ): string {
+  const weaponGroups = getTestItemGroupCount(weaponTestProperties)
+
+  const shieldGroups = getTestItemGroupCount(defensiveProperties)
+
+  const armorGroups = getTestItemGroupCount(miscProperties)
+
+  const cloakGroups = getTestItemGroupCount(spellProperties)
+
+  const testItems: string[] = []
+
+  for (let group = 1; group <= weaponGroups; group++) {
+    testItems.push(
+      generateCreateTestItem(`oWeapon${group}`, weapon.resRef, group)
+    )
+  }
+
+  for (let group = 1; group <= shieldGroups; group++) {
+    testItems.push(
+      generateCreateTestItem(`oShield${group}`, shield.resRef, group)
+    )
+  }
+
+  for (let group = 1; group <= armorGroups; group++) {
+    testItems.push(
+      generateCreateTestItem(`oArmor${group}`, armor.resRef, group)
+    )
+  }
+
+  for (let group = 1; group <= cloakGroups; group++) {
+    testItems.push(
+      generateCreateTestItem(`oCloak${group}`, cloak.resRef, group)
+    )
+  }
+
   return [
+    generateCleanupTestItemsFunction(),
+    "",
     "void main()",
     "{",
     indent("object oPC = OBJECT_SELF;"),
     "",
-    indent(generateEnsureItem("oWeapon", weapon.tag, weapon.resRef)),
+    indent("RemoveOldPropertyTestItems(oPC);"),
     "",
-    indent(generateEnsureItem("oShield", shield.tag, shield.resRef)),
+    indent(testItems.join("\n\n")),
     "",
-    indent(generateEnsureItem("oArmor", armor.tag, armor.resRef)),
-    "",
-    indent(generateEnsureItem("oCloak", cloak.tag, cloak.resRef)),
-    "",
-    indent('SendMessageToPC(oPC, "Testitems sind vorhanden.");'),
+    indent('SendMessageToPC(oPC, "Testitems wurden erstellt.");'),
     "}",
   ].join("\n")
 }
@@ -228,6 +264,70 @@ function generateTestRunnerScript(testScripts: GeneratedScriptFile[]): string {
         2
       )}, SendMessageToPC(oPC, "Alle Property-Tests wurden gestartet."));`
     ),
+    "}",
+  ].join("\n")
+}
+
+function generateFindTestItemFunction(): string {
+  return [
+    "object FindTestItem(object oPC, string sTag, int nGroup)",
+    "{",
+    "    object oItem = GetFirstItemInInventory(oPC);",
+    "",
+    "    while (GetIsObjectValid(oItem))",
+    "    {",
+    '        if (GetTag(oItem) == sTag && GetLocalInt(oItem, "LVL_TEST_GROUP") == nGroup)',
+    "        {",
+    "            return oItem;",
+    "        }",
+    "",
+    "        oItem = GetNextItemInInventory(oPC);",
+    "    }",
+    "",
+    "    return OBJECT_INVALID;",
+    "}",
+  ].join("\n")
+}
+
+function generateCreateTestItem(
+  variableName: string,
+  resRef: string,
+  group: number
+): string {
+  return [
+    `object ${variableName} = CreateItemOnObject("${resRef}", oPC);`,
+    "",
+    `if (GetIsObjectValid(${variableName}))`,
+    "{",
+    indent(`SetLocalInt(${variableName}, "LVL_PROPERTY_TEST_ITEM", 1);`),
+    indent(`SetLocalInt(${variableName}, "LVL_TEST_GROUP", ${group});`),
+    "}",
+  ].join("\n")
+}
+
+function getTestItemGroupCount(definitions: ItemPropertyDefinition[]): number {
+  const testCount = generatePropertyTests(definitions).length
+
+  return Math.max(1, Math.ceil(testCount / MAX_PROPERTIES_PER_TEST_ITEM))
+}
+
+function generateCleanupTestItemsFunction(): string {
+  return [
+    "void RemoveOldPropertyTestItems(object oPC)",
+    "{",
+    "    object oItem = GetFirstItemInInventory(oPC);",
+    "",
+    "    while (GetIsObjectValid(oItem))",
+    "    {",
+    "        object oNextItem = GetNextItemInInventory(oPC);",
+    "",
+    '        if (GetLocalInt(oItem, "LVL_PROPERTY_TEST_ITEM") == 1)',
+    "        {",
+    "            DestroyObject(oItem);",
+    "        }",
+    "",
+    "        oItem = oNextItem;",
+    "    }",
     "}",
   ].join("\n")
 }
