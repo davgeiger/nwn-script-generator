@@ -14,10 +14,12 @@ import type { BuildConfig } from "@/types/builds"
 import type { LevelItem } from "@/types/items"
 
 import { ConfirmDialog } from "../common/ConfirmDialog"
+import { Input } from "../ui/input"
 
 type BuildItemAssignmentProps = {
   items: LevelItem[]
   activeBuild: BuildConfig
+  onGrantLevelChange: (itemId: string, grantLevel: number) => void
 
   onAddItem: (itemId: string) => void
   onRemoveItem: (itemId: string) => void
@@ -26,6 +28,7 @@ type BuildItemAssignmentProps = {
 export function BuildItemAssignment({
   items,
   activeBuild,
+  onGrantLevelChange,
   onAddItem,
   onRemoveItem,
 }: BuildItemAssignmentProps) {
@@ -38,7 +41,7 @@ export function BuildItemAssignment({
       return
     }
 
-    onRemoveItem(itemId)
+    setPendingItemId(itemId)
   }
 
   return (
@@ -61,31 +64,51 @@ export function BuildItemAssignment({
           </CollapsibleTrigger>
 
           <CollapsibleContent>
+            <div className="flex items-center gap-3 text-sm font-medium">
+              <span className="flex-1">Item</span>
+
+              <span className="w-20">Level</span>
+            </div>
             <div className="space-y-2">
               {items.map((item) => {
-                const checked = activeBuild.itemIds.includes(item.id)
+                const buildItem = activeBuild.items.find(
+                  (buildItem) => buildItem.itemId === item.id
+                )
+
+                const checked = buildItem !== undefined
 
                 return (
-                  <div key={item.id} className="flex items-center gap-2">
+                  <div key={item.id} className="flex items-center gap-3">
                     <Checkbox
                       id={`build-item-${item.id}`}
                       checked={checked}
-                      onCheckedChange={(value) => {
-                        if (value === true) {
-                          handleCheckedChange(item.id, true)
-                          return
-                        }
-
-                        setPendingItemId(item.id)
-                      }}
+                      onCheckedChange={(value) =>
+                        handleCheckedChange(item.id, value === true)
+                      }
                     />
 
                     <label
                       htmlFor={`build-item-${item.id}`}
-                      className="text-sm"
+                      className="flex-1 text-sm"
                     >
                       {item.name}
                     </label>
+
+                    {buildItem && (
+                      <Input
+                        type="number"
+                        min={1}
+                        max={40}
+                        value={buildItem.grantLevel}
+                        onChange={(event) =>
+                          onGrantLevelChange(
+                            item.id,
+                            Number(event.target.value)
+                          )
+                        }
+                        className="w-20"
+                      />
+                    )}
                   </div>
                 )
               })}

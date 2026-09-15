@@ -7,7 +7,6 @@ import {
   getPropertyOperationLabel,
   isParameterVisible,
 } from "@/resolvers/propertyResolver"
-import type { LevelItem } from "@/types/items"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -17,11 +16,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 import { resolveTierState } from "@/resolvers/tierResolver"
+import type { ResolvedBuildItem } from "@/resolvers/buildResolver"
 
 type TierEditorProps = {
   tier: TierConfig
   tiers: TierConfig[]
-  items: LevelItem[]
+  items: ResolvedBuildItem[]
   onChange: (tier: TierConfig) => void
 }
 

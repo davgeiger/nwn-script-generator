@@ -7,7 +7,7 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_weapon",
     tag: "LVL_WEAPON",
     slot: "weapon",
-    grantLevel: 1,
+
     weaponCategory: "melee",
     physicalDamageTypes: ["piercing"],
   },
@@ -17,7 +17,7 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_staff",
     tag: "LVL_STAFF",
     slot: "weapon",
-    grantLevel: 1,
+
     weaponCategory: "melee",
     physicalDamageTypes: ["bludgeoning"],
   },
@@ -27,7 +27,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_shield",
     tag: "LVL_SHIELD",
     slot: "shield",
-    grantLevel: 2,
   },
   {
     id: "armor",
@@ -35,7 +34,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_armor",
     tag: "LVL_ARMOR",
     slot: "armor",
-    grantLevel: 3,
   },
   {
     id: "robe",
@@ -43,7 +41,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_robe",
     tag: "LVL_ROBE",
     slot: "armor",
-    grantLevel: 3,
   },
   {
     id: "helmet",
@@ -51,7 +48,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_helmet",
     tag: "LVL_HELMET",
     slot: "helmet",
-    grantLevel: 4,
   },
   {
     id: "gloves",
@@ -59,7 +55,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_gloves",
     tag: "LVL_GLOVES",
     slot: "gloves",
-    grantLevel: 5,
   },
   {
     id: "boots",
@@ -67,7 +62,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_boots",
     tag: "LVL_BOOTS",
     slot: "boots",
-    grantLevel: 6,
   },
   {
     id: "belt",
@@ -75,7 +69,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_belt",
     tag: "LVL_BELT",
     slot: "belt",
-    grantLevel: 7,
   },
   {
     id: "cloak",
@@ -83,7 +76,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_cloak",
     tag: "LVL_CLOAK",
     slot: "cloak",
-    grantLevel: 8,
   },
   {
     id: "amulet",
@@ -91,7 +83,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_amu",
     tag: "LVL_AMU",
     slot: "amulet",
-    grantLevel: 9,
   },
   {
     id: "ring1",
@@ -99,7 +90,6 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_ring_1",
     tag: "LVL_RING_1",
     slot: "ring",
-    grantLevel: 10,
   },
   {
     id: "ring2",
@@ -107,6 +97,5 @@ export const initialItems: LevelItem[] = [
     resRef: "lvl_ring_2",
     tag: "LVL_RING_2",
     slot: "ring",
-    grantLevel: 10,
   },
 ]

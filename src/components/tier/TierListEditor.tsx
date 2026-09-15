@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import type { TierConfig } from "@/types/tiers"
-import type { LevelItem } from "@/types/items"
+import type { ResolvedBuildItem } from "@/resolvers/buildResolver"
 
 import { Button } from "@/components/ui/button"
 import { TierEditor } from "@/components/tier/TierEditor"
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/collapsible"
 
 type TierListEditorProps = {
-  items: LevelItem[]
+  items: ResolvedBuildItem[]
   tiers: TierConfig[]
   onTiersChange: (tiers: TierConfig[]) => void
 }

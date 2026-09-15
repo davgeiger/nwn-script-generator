@@ -4,8 +4,11 @@ import { resolveLevelState, resolveTierState } from "@/resolvers/tierResolver"
 import type { ProjectConfig } from "@/types/config"
 import { generateItemGrantCode } from "./itemGenerator"
 
-import { getActiveBuild, getBuildItems } from "@/resolvers/buildResolver"
-import type { LevelItem } from "@/types/items"
+import {
+  getActiveBuild,
+  getBuildItems,
+  type ResolvedBuildItem,
+} from "@/resolvers/buildResolver"
 
 const getPlayerItemByTagFunction = [
   "object GetPlayerItemByTag(object oPC, string sTag)",
@@ -137,7 +140,7 @@ export function generateLevelScript(config: ProjectConfig): string {
   ].join("\n")
 }
 
-function generateItemGrantBlocks(items: LevelItem[]): string {
+function generateItemGrantBlocks(items: ResolvedBuildItem[]): string {
   const grantLevels = Array.from(
     new Set(items.map((item) => item.grantLevel))
   ).sort((a, b) => a - b)

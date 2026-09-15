@@ -22,7 +22,6 @@ export type LevelItem = {
   slot: ItemSlot
   tag: string
   resRef: string
-  grantLevel: number
 
   weaponCategory?: WeaponCategory
   physicalDamageTypes?: PhysicalDamageType[]

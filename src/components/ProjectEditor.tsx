@@ -25,7 +25,48 @@ const initialConfig: ProjectConfig = {
     {
       id: "fighter",
       name: "Krieger",
-      itemIds: initialItems.map((item) => item.id),
+      items: [
+        {
+          itemId: "weapon",
+          grantLevel: 1,
+        },
+        {
+          itemId: "shield",
+          grantLevel: 2,
+        },
+        {
+          itemId: "armor",
+          grantLevel: 3,
+        },
+        {
+          itemId: "helmet",
+          grantLevel: 4,
+        },
+        {
+          itemId: "gloves",
+          grantLevel: 5,
+        },
+        {
+          itemId: "belt",
+          grantLevel: 7,
+        },
+        {
+          itemId: "cloak",
+          grantLevel: 8,
+        },
+        {
+          itemId: "amulet",
+          grantLevel: 9,
+        },
+        {
+          itemId: "ring1",
+          grantLevel: 10,
+        },
+        {
+          itemId: "ring2",
+          grantLevel: 10,
+        },
+      ],
 
       tiers: [
         {
@@ -84,7 +125,6 @@ export function ProjectEditor() {
       resRef: "",
       tag: "",
       slot: "weapon",
-      grantLevel: 1,
     }
 
     setConfig((currentConfig) => ({
@@ -106,7 +146,7 @@ export function ProjectEditor() {
       builds: currentConfig.builds.map((build) => ({
         ...build,
 
-        itemIds: build.itemIds.filter((id) => id !== itemId),
+        items: build.items.filter((item) => item.itemId !== itemId),
 
         tiers: build.tiers.map((tier) => ({
           ...tier,
@@ -126,13 +166,19 @@ export function ProjectEditor() {
           return build
         }
 
-        if (build.itemIds.includes(itemId)) {
+        if (build.items.some((item) => item.itemId === itemId)) {
           return build
         }
 
         return {
           ...build,
-          itemIds: [...build.itemIds, itemId],
+          items: [
+            ...build.items,
+            {
+              itemId,
+              grantLevel: 1,
+            },
+          ],
         }
       }),
     }))
@@ -150,13 +196,38 @@ export function ProjectEditor() {
         return {
           ...build,
 
-          itemIds: build.itemIds.filter((id) => id !== itemId),
+          items: build.items.filter((item) => item.itemId !== itemId),
 
           tiers: build.tiers.map((tier) => ({
             ...tier,
 
             items: tier.items.filter((item) => item.itemId !== itemId),
           })),
+        }
+      }),
+    }))
+  }
+
+  function handleGrantLevelChange(itemId: string, grantLevel: number) {
+    setConfig((currentConfig) => ({
+      ...currentConfig,
+
+      builds: currentConfig.builds.map((build) => {
+        if (build.id !== currentConfig.activeBuildId) {
+          return build
+        }
+
+        return {
+          ...build,
+
+          items: build.items.map((item) =>
+            item.itemId === itemId
+              ? {
+                  ...item,
+                  grantLevel,
+                }
+              : item
+          ),
         }
       }),
     }))
@@ -235,6 +306,7 @@ export function ProjectEditor() {
             activeBuild={activeBuild}
             onAddItem={handleAddItemToBuild}
             onRemoveItem={handleRemoveItemFromBuild}
+            onGrantLevelChange={handleGrantLevelChange}
           />
         )}
 

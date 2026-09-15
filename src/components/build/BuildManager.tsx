@@ -47,7 +47,7 @@ export function BuildManager({
     const newBuild: BuildConfig = {
       id: `build-${crypto.randomUUID()}`,
       name: `Build ${nextNumber}`,
-      itemIds: [],
+      items: [],
       tiers: [
         {
           id: "tier-1",
@@ -71,6 +71,9 @@ export function BuildManager({
       ...structuredClone(activeBuild),
       id: `build-${crypto.randomUUID()}`,
       name: `${activeBuild.name} Kopie`,
+      items: activeBuild.items.map((item) => ({
+        ...item,
+      })),
       tiers: activeBuild.tiers.map((tier, index) => ({
         ...tier,
         id: `tier-${index + 1}-${crypto.randomUUID()}`,
