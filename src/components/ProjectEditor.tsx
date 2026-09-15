@@ -310,13 +310,6 @@ export function ProjectEditor() {
           />
         )}
 
-        <ItemListEditor
-          items={config.items}
-          onItemChange={handleItemChange}
-          onAddItem={handleAddItem}
-          onRemoveItem={handleDeleteItem}
-        />
-
         <TierListEditor
           items={buildItems}
           tiers={activeBuild.tiers}
@@ -336,7 +329,14 @@ export function ProjectEditor() {
         />
 
         <ScriptManager config={config} />
+        <ItemListEditor
+          items={config.items}
+          onItemChange={handleItemChange}
+          onAddItem={handleAddItem}
+          onRemoveItem={handleDeleteItem}
+        />
       </div>
+
       <ConfirmDialog
         open={pendingImport !== null}
         onOpenChange={(open) => {
@@ -353,6 +353,7 @@ export function ProjectEditor() {
           }
         }}
       />
+
       <ConfirmDialog
         open={resetDialogOpen}
         onOpenChange={setResetDialogOpen}

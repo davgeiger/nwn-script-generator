@@ -172,6 +172,7 @@ export function TierEditor({ tier, tiers, items, onChange }: TierEditorProps) {
 
               <PropertyEditor
                 item={item}
+                currentProperties={resolvedItem?.properties ?? []}
                 onAddProperty={(property) =>
                   handleAddProperty(item.id, property)
                 }

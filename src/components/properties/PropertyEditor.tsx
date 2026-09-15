@@ -24,10 +24,15 @@ import { SearchablePropertySelect } from "./SearchablePropertySelect"
 
 type PropertyEditorProps = {
   item: LevelItem
+  currentProperties: ItemPropertyConfig[]
   onAddProperty: (property: ItemPropertyConfig) => void
 }
 
-export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
+export function PropertyEditor({
+  item,
+  currentProperties,
+  onAddProperty,
+}: PropertyEditorProps) {
   const [selectedPropertyId, setSelectedPropertyId] = useState("")
   const [parameterValues, setParameterValues] = useState<
     Record<string, PropertyValue>
@@ -74,18 +79,43 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
     })
   }, [item.id, item.slot, item.weaponCategory, item.physicalDamageTypes])
 
+  const operationAvailableProperties = useMemo(() => {
+    return availableProperties.filter((property) => {
+      const currentConfigs = currentProperties.filter(
+        (config) => config.propertyId === property.id
+      )
+
+      const exists = currentConfigs.length > 0
+      const hasKeyParameters = Boolean(property.keyParameters?.length)
+
+      switch (selectedOperation) {
+        case "add":
+          // Ohne Subtypes darf eine vorhandene Property
+          // nicht nochmals hinzugefügt werden.
+
+          // Mit Subtypes kann es noch weitere Varianten geben.
+          return !exists || hasKeyParameters
+
+        case "replace":
+        case "remove":
+          // Nur vorhandene Property-Typen anbieten.
+          return exists
+      }
+    })
+  }, [availableProperties, currentProperties, selectedOperation])
+
   const sortedAvailableProperties = useMemo(() => {
-    return [...availableProperties].sort((a, b) =>
+    return [...operationAvailableProperties].sort((a, b) =>
       a.name.localeCompare(b.name, "de")
     )
-  }, [availableProperties])
+  }, [operationAvailableProperties])
 
   const selectedProperty = useMemo(
     () =>
-      availableProperties.find(
+      operationAvailableProperties.find(
         (property) => property.id === selectedPropertyId
       ),
-    [availableProperties, selectedPropertyId]
+    [operationAvailableProperties, selectedPropertyId]
   )
 
   const visibleParameters = selectedProperty
@@ -184,6 +214,37 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
     setSelectedOperation("add")
   }
 
+  function getFilteredParameterOptions(parameter: PropertyParameter) {
+    if (
+      !selectedProperty ||
+      selectedProperty.keyParameters?.length !== 1 ||
+      !selectedProperty.keyParameters.includes(parameter.id)
+    ) {
+      return parameter.options ?? []
+    }
+
+    const currentConfigs = currentProperties.filter(
+      (config) => config.propertyId === selectedProperty.id
+    )
+
+    const currentValues = new Set(
+      currentConfigs.map((config) => String(config.values[parameter.id]))
+    )
+
+    return (parameter.options ?? []).filter((option) => {
+      const exists = currentValues.has(String(option.value))
+
+      switch (selectedOperation) {
+        case "add":
+          return !exists
+
+        case "replace":
+        case "remove":
+          return exists
+      }
+    })
+  }
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -198,6 +259,8 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
             }
 
             setSelectedOperation(value as PropertyOperation)
+            setSelectedPropertyId("")
+            setParameterValues({})
           }}
         >
           <SelectTrigger>
@@ -246,6 +309,8 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
               parameter,
               parameterValues[parameter.id]
             )
+
+            const filteredOptions = getFilteredParameterOptions(parameter)
 
             return (
               <div key={parameter.id} className="space-y-2">
@@ -298,7 +363,7 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
                 {parameter.type === "select" &&
                   (parameter.searchable ? (
                     <SearchablePropertySelect
-                      options={parameter.options ?? []}
+                      options={filteredOptions}
                       value={parameterValues[parameter.id]}
                       placeholder={`${parameter.label} auswählen`}
                       searchPlaceholder={`${parameter.label} suchen...`}
@@ -308,12 +373,10 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
                     />
                   ) : (
                     <Select
-                      items={
-                        parameter.options?.map((option) => ({
-                          value: String(option.value),
-                          label: option.label,
-                        })) ?? []
-                      }
+                      items={filteredOptions.map((option) => ({
+                        value: String(option.value),
+                        label: option.label,
+                      }))}
                       value={
                         parameterValues[parameter.id] !== undefined
                           ? String(parameterValues[parameter.id])
@@ -334,7 +397,7 @@ export function PropertyEditor({ item, onAddProperty }: PropertyEditorProps) {
                       </SelectTrigger>
 
                       <SelectContent>
-                        {parameter.options?.map((option) => (
+                        {filteredOptions.map((option) => (
                           <SelectItem
                             key={String(option.value)}
                             value={String(option.value)}
