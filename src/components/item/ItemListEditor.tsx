@@ -47,6 +47,10 @@ export function ItemListEditor({
     <>
       <div className="space-y-3">
         <h2 className="text-lg font-semibold">Item Editor</h2>
+        <p className="text-sm text-muted-foreground">
+          Hier können die global im Projekt verfügbaren Items erstellt,
+          bearbeitet und entfernt werden.
+        </p>
         <Collapsible open={isItemEditorOpen} onOpenChange={setIsItemEditorOpen}>
           <CollapsibleTrigger
             render={

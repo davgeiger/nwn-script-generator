@@ -209,9 +209,10 @@ export function ProjectEditor() {
   }
 
   function handleGrantLevelChange(itemId: string, grantLevel: number) {
+    const validGrantLevel = Math.min(40, Math.max(1, grantLevel))
+
     setConfig((currentConfig) => ({
       ...currentConfig,
-
       builds: currentConfig.builds.map((build) => {
         if (build.id !== currentConfig.activeBuildId) {
           return build
@@ -219,12 +220,11 @@ export function ProjectEditor() {
 
         return {
           ...build,
-
           items: build.items.map((item) =>
             item.itemId === itemId
               ? {
                   ...item,
-                  grantLevel,
+                  grantLevel: validGrantLevel,
                 }
               : item
           ),
@@ -310,6 +310,13 @@ export function ProjectEditor() {
           />
         )}
 
+        <ItemListEditor
+          items={config.items}
+          onItemChange={handleItemChange}
+          onAddItem={handleAddItem}
+          onRemoveItem={handleDeleteItem}
+        />
+
         <TierListEditor
           items={buildItems}
           tiers={activeBuild.tiers}
@@ -326,13 +333,6 @@ export function ProjectEditor() {
               ),
             }))
           }}
-        />
-
-        <ItemListEditor
-          items={config.items}
-          onItemChange={handleItemChange}
-          onAddItem={handleAddItem}
-          onRemoveItem={handleDeleteItem}
         />
 
         <ScriptManager config={config} />

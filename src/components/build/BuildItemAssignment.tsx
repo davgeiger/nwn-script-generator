@@ -48,13 +48,17 @@ export function BuildItemAssignment({
     <>
       <div className="space-y-3">
         <h2 className="text-lg font-semibold">Item Zuordnung</h2>
+        <p className="text-sm text-muted-foreground">
+          Hier können die global verfügbaren Items dem ausgewählten Build
+          zugeordnet und ihre Vergabe-Level festgelegt werden.
+        </p>
         <Collapsible open={open} onOpenChange={setOpen} className="space-y-3">
           <CollapsibleTrigger
             render={
               <Button variant="outline" className="w-full justify-between" />
             }
           >
-            <span>Item-Zuordnung</span>
+            <span>Item-Konfiguration</span>
 
             {open ? (
               <ChevronDown className="h-4 w-4" />

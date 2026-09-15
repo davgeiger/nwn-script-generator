@@ -90,6 +90,10 @@ export function TierListEditor({
   return (
     <div className="space-y-3">
       <h2 className="text-lg font-semibold">Tier Editor</h2>
+      <p className="text-sm text-muted-foreground">
+        Hier wird die Progression der Items für den ausgewählten Build
+        festgelegt. Jedes Tier ist dabei an ein Charakterlevel gebunden.
+      </p>
       <Collapsible open={open} onOpenChange={setOpen} className="space-y-3">
         <CollapsibleTrigger
           render={
