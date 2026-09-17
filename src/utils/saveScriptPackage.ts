@@ -12,6 +12,40 @@ export async function saveScriptPackage(
     zip.file(script.filename, script.content)
   }
 
+  if ("__TAURI_INTERNALS__" in window) {
+    await saveScriptPackageDesktop(zip, filename)
+    return
+  }
+
+  await saveScriptPackageWeb(zip, filename)
+}
+
+async function saveScriptPackageDesktop(zip: JSZip, filename: string) {
+  const { save } = await import("@tauri-apps/plugin-dialog")
+  const { writeFile } = await import("@tauri-apps/plugin-fs")
+
+  const path = await save({
+    defaultPath: filename,
+    filters: [
+      {
+        name: "ZIP-Archiv",
+        extensions: ["zip"],
+      },
+    ],
+  })
+
+  if (!path) {
+    return
+  }
+
+  const data = await zip.generateAsync({
+    type: "uint8array",
+  })
+
+  await writeFile(path, data)
+}
+
+async function saveScriptPackageWeb(zip: JSZip, filename: string) {
   const blob = await zip.generateAsync({
     type: "blob",
   })

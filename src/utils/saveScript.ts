@@ -16,6 +16,32 @@ function downloadScript(filename: string, content: string) {
   URL.revokeObjectURL(url)
 }
 
-export function saveScript(filename: string, content: string) {
+async function saveScriptDesktop(filename: string, content: string) {
+  const { save } = await import("@tauri-apps/plugin-dialog")
+  const { writeTextFile } = await import("@tauri-apps/plugin-fs")
+
+  const path = await save({
+    defaultPath: filename,
+    filters: [
+      {
+        name: "NWScript",
+        extensions: ["nss"],
+      },
+    ],
+  })
+
+  if (!path) {
+    return
+  }
+
+  await writeTextFile(path, content)
+}
+
+export async function saveScript(filename: string, content: string) {
+  if ("__TAURI_INTERNALS__" in window) {
+    await saveScriptDesktop(filename, content)
+    return
+  }
+
   downloadScript(filename, content)
 }
