@@ -171,12 +171,25 @@ export function ScriptManager({ config }: ScriptManagerProps) {
           script={previewScript.content}
         />
       )}
-      <Button
-        variant="secondary"
-        onClick={() => saveScriptPackage(scriptFiles)}
-      >
-        Alle herunterladen
-      </Button>
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="secondary"
+          onClick={() =>
+            saveScriptPackage(normalScripts, "nwn-level-items.zip")
+          }
+        >
+          Skripte herunterladen
+        </Button>
+
+        <Button
+          variant="secondary"
+          onClick={() =>
+            saveScriptPackage(testScripts, "nwn-level-items-tests.zip")
+          }
+        >
+          Testskripte herunterladen
+        </Button>
+      </div>
     </div>
   )
 }
