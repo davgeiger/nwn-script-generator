@@ -288,7 +288,7 @@ export function PropertyEditor({
           value={selectedPropertyId}
           onValueChange={handlePropertyChange}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Eigenschaft auswählen" />
           </SelectTrigger>
 
@@ -390,7 +390,7 @@ export function PropertyEditor({
                         handleParameterChange(parameter.id, value)
                       }}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-72">
                         <SelectValue
                           placeholder={`${parameter.label} auswählen`}
                         />
