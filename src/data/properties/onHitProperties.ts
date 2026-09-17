@@ -4,6 +4,7 @@ import {
   alignmentOptions,
   racialTypeOptions,
 } from "@/data/options/propertyOptions"
+import { onHitCastSpellOptions } from "@/data/options/onHitCastSpellOptions"
 
 export const onHitProperties: ItemPropertyDefinition[] = [
   // onHit
@@ -513,43 +514,8 @@ export const onHitProperties: ItemPropertyDefinition[] = [
         label: "Zauber",
         type: "select",
         required: true,
-        options: [
-          {
-            label: "Benommenheit",
-            value: "daze",
-            nwscriptValue: "IP_CONST_ONHIT_CASTSPELL_DAZE",
-          },
-          {
-            label: "Verwirrung",
-            value: "confusion",
-            nwscriptValue: "IP_CONST_ONHIT_CASTSPELL_CONFUSION",
-          },
-          {
-            label: "Blindheit / Taubheit",
-            value: "blindnessDeafness",
-            nwscriptValue: "IP_CONST_ONHIT_CASTSPELL_BLINDNESS_AND_DEAFNESS",
-          },
-          {
-            label: "Dunkelheit",
-            value: "darkness",
-            nwscriptValue: "IP_CONST_ONHIT_CASTSPELL_DARKNESS",
-          },
-          {
-            label: "Fluch",
-            value: "bestowCurse",
-            nwscriptValue: "IP_CONST_ONHIT_CASTSPELL_BESTOW_CURSE",
-          },
-          {
-            label: "Verdammnis",
-            value: "doom",
-            nwscriptValue: "IP_CONST_ONHIT_CASTSPELL_DOOM",
-          },
-          {
-            label: "Magie bannen",
-            value: "dispelMagic",
-            nwscriptValue: "IP_CONST_ONHIT_CASTSPELL_DISPEL_MAGIC",
-          },
-        ],
+        searchable: true,
+        options: onHitCastSpellOptions,
       },
       {
         id: "casterLevel",

@@ -6,6 +6,7 @@ import {
   damageVulnerabilityOptions,
   physicalDamageTypeOptions,
   racialTypeOptions,
+  sortOptionsByLabel,
 } from "@/data/options/propertyOptions"
 import { bodyArmorSlots } from "./bodyArmorslots"
 
@@ -298,7 +299,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
         label: "Schadensart",
         type: "select",
         required: true,
-        options: damageTypeOptions,
+        options: sortOptionsByLabel(damageTypeOptions),
       },
       {
         id: "amount",
@@ -386,7 +387,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
         label: "Schadensart",
         type: "select",
         required: true,
-        options: [
+        options: sortOptionsByLabel([
           {
             label: "Säure",
             value: "acid",
@@ -427,7 +428,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
             value: "sonic",
             nwscriptValue: "IP_CONST_DAMAGETYPE_SONIC",
           },
-        ],
+        ]),
       },
       {
         id: "percentage",
@@ -500,7 +501,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
         label: "Immunität gegen",
         type: "select",
         required: true,
-        options: [
+        options: sortOptionsByLabel([
           {
             label: "Hinterhältige Angriffe",
             value: "backstab",
@@ -551,7 +552,7 @@ export const defensiveProperties: ItemPropertyDefinition[] = [
             value: "poison",
             nwscriptValue: "IP_CONST_IMMUNITYMISC_POISON",
           },
-        ],
+        ]),
       },
     ],
     nwscript: {

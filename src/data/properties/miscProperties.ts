@@ -9,6 +9,7 @@ import {
   lightColorOptions,
   racialTypeOptions,
   reducedWeightOptions,
+  sortOptionsByLabel,
   weightIncreaseOptions,
 } from "@/data/options/propertyOptions"
 import { bodyArmorSlots } from "./bodyArmorslots"
@@ -106,7 +107,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
         label: "Fertigkeit",
         type: "select",
         required: true,
-        options: [
+        options: sortOptionsByLabel([
           {
             label: "Tierempathie",
             value: "animalEmpathy",
@@ -247,7 +248,7 @@ export const miscProperties: ItemPropertyDefinition[] = [
             value: "useMagicDevice",
             nwscriptValue: "SKILL_USE_MAGIC_DEVICE",
           },
-        ],
+        ]),
       },
       {
         id: "bonus",
