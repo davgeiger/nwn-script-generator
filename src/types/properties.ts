@@ -12,6 +12,7 @@ export type PropertyParameterOption = {
   label: string
   value: string | number
   nwscriptValue?: string
+  description?: string
 }
 
 export type PropertyParameterCondition = {

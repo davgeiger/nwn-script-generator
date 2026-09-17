@@ -9,6 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Info } from "lucide-react"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 import { itemProperties } from "@/data/itemProperties"
 import type { LevelItem } from "@/types/items"
@@ -312,6 +318,11 @@ export function PropertyEditor({
 
             const filteredOptions = getFilteredParameterOptions(parameter)
 
+            const selectedOption = parameter.options?.find(
+              (option) =>
+                String(option.value) === String(parameterValues[parameter.id])
+            )
+
             return (
               <div key={parameter.id} className="space-y-2">
                 <label className="text-sm font-medium">{parameter.label}</label>
@@ -362,15 +373,48 @@ export function PropertyEditor({
 
                 {parameter.type === "select" &&
                   (parameter.searchable ? (
-                    <SearchablePropertySelect
-                      options={filteredOptions}
-                      value={parameterValues[parameter.id]}
-                      placeholder={`${parameter.label} auswählen`}
-                      searchPlaceholder={`${parameter.label} suchen...`}
-                      onChange={(value) =>
-                        handleParameterChange(parameter.id, value)
-                      }
-                    />
+                    <div className="flex items-center gap-2">
+                      <div className="min-w-0 flex-1">
+                        <SearchablePropertySelect
+                          options={filteredOptions}
+                          value={parameterValues[parameter.id]}
+                          placeholder={`${parameter.label} auswählen`}
+                          searchPlaceholder={`${parameter.label} suchen...`}
+                          onChange={(value) =>
+                            handleParameterChange(parameter.id, value)
+                          }
+                        />
+                      </div>
+
+                      {selectedOption?.description && (
+                        <Popover>
+                          <PopoverTrigger
+                            render={
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="icon"
+                                className="shrink-0"
+                              >
+                                <Info className="size-4" />
+                              </Button>
+                            }
+                          />
+
+                          <PopoverContent className="w-96">
+                            <div className="space-y-2">
+                              <h4 className="font-medium">
+                                {selectedOption.label}
+                              </h4>
+
+                              <p className="text-sm whitespace-pre-line text-muted-foreground">
+                                {selectedOption.description}
+                              </p>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    </div>
                   ) : (
                     <Select
                       items={filteredOptions.map((option) => ({
