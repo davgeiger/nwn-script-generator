@@ -16,8 +16,7 @@ function isProjectConfig(value: unknown): value is ProjectConfig {
   )
 }
 
-export async function importProject(file: File): Promise<ProjectConfig> {
-  const text = await file.text()
+function parseProject(text: string): ProjectConfig {
   const parsed: unknown = JSON.parse(text)
 
   if (!isProjectConfig(parsed)) {
@@ -25,4 +24,34 @@ export async function importProject(file: File): Promise<ProjectConfig> {
   }
 
   return parsed
+}
+
+export async function importProject(file: File): Promise<ProjectConfig> {
+  const text = await file.text()
+
+  return parseProject(text)
+}
+
+export async function importProjectDesktop(): Promise<ProjectConfig | null> {
+  const { open } = await import("@tauri-apps/plugin-dialog")
+  const { readTextFile } = await import("@tauri-apps/plugin-fs")
+
+  const path = await open({
+    multiple: false,
+    directory: false,
+    filters: [
+      {
+        name: "Projektkonfiguration",
+        extensions: ["json"],
+      },
+    ],
+  })
+
+  if (!path) {
+    return null
+  }
+
+  const text = await readTextFile(path)
+
+  return parseProject(text)
 }

@@ -14,7 +14,7 @@ import { ScriptManager } from "@/components/script/ScriptManager"
 import { BuildManager } from "./build/BuildManager"
 import { BuildItemAssignment } from "./build/BuildItemAssignment"
 import { Button } from "./ui/button"
-import { importProject } from "@/storage/importProject"
+import { importProject, importProjectDesktop } from "@/storage/importProject"
 import { exportProject } from "@/storage/exportProject"
 import { ConfirmDialog } from "./common/ConfirmDialog"
 
@@ -233,16 +233,31 @@ export function ProjectEditor() {
     }))
   }
 
+  async function handleImport() {
+    if ("__TAURI_INTERNALS__" in window) {
+      try {
+        const importedConfig = await importProjectDesktop()
+
+        if (importedConfig) {
+          setPendingImport(importedConfig)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+
+      return
+    }
+
+    fileInputRef.current?.click()
+  }
+
   return (
     <>
       <div className="mb-3">
         {" "}
         <h1 className="mb-1 text-xl font-bold">Item Skript Generator</h1>
         <div className="flex gap-1">
-          <Button
-            variant="outline"
-            onClick={() => fileInputRef.current?.click()}
-          >
+          <Button variant="outline" onClick={handleImport}>
             Importieren
           </Button>
           <input
@@ -259,7 +274,6 @@ export function ProjectEditor() {
 
               try {
                 const importedConfig = await importProject(file)
-
                 setPendingImport(importedConfig)
               } catch (error) {
                 console.error(error)
@@ -268,7 +282,7 @@ export function ProjectEditor() {
               event.target.value = ""
             }}
           />
-          <Button variant="outline" onClick={() => exportProject(config)}>
+          <Button variant="outline" onClick={() => void exportProject(config)}>
             Exportieren
           </Button>
           <Button
