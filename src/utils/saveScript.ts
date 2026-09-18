@@ -1,3 +1,5 @@
+import { isTauri } from "./isTauri"
+
 function downloadScript(filename: string, content: string) {
   const blob = new Blob([content], {
     type: "text/plain;charset=utf-8",
@@ -38,7 +40,7 @@ async function saveScriptDesktop(filename: string, content: string) {
 }
 
 export async function saveScript(filename: string, content: string) {
-  if ("__TAURI_INTERNALS__" in window) {
+  if (isTauri()) {
     await saveScriptDesktop(filename, content)
     return
   }

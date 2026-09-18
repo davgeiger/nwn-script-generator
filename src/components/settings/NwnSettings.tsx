@@ -2,6 +2,7 @@ import type { NwnSettings as NwnSettingsType } from "@/storage/nwnSettings"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { isTauri } from "@/utils/isTauri"
 
 type NwnSettingsProps = {
   settings: NwnSettingsType
@@ -10,7 +11,7 @@ type NwnSettingsProps = {
 
 export function NwnSettings({ settings, onChange }: NwnSettingsProps) {
   async function selectDirectory(field: keyof NwnSettingsType) {
-    if (!("__TAURI_INTERNALS__" in window)) {
+    if (!isTauri()) {
       return
     }
 

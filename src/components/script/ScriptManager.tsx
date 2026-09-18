@@ -22,6 +22,8 @@ import { compileScripts, type CompileResult } from "@/utils/compileScripts"
 
 import type { NwnSettings } from "@/storage/nwnSettings"
 
+import { isTauri } from "@/utils/isTauri"
+
 type ScriptManagerProps = {
   config: ProjectConfig
   nwnSettings: NwnSettings
@@ -225,17 +227,19 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
         >
           Testskripte herunterladen
         </Button>
-        <Button
-          variant="outline"
-          disabled={
-            isCompiling || !nwnSettings.installPath || !nwnSettings.homePath
-          }
-          onClick={() => void handleCompile()}
-        >
-          {isCompiling ? "Kompiliere..." : "Kompilieren und installieren"}
-        </Button>
+        {isTauri() && (
+          <Button
+            variant="outline"
+            disabled={
+              isCompiling || !nwnSettings.installPath || !nwnSettings.homePath
+            }
+            onClick={() => void handleCompile()}
+          >
+            {isCompiling ? "Kompiliere..." : "Kompilieren und installieren"}
+          </Button>
+        )}
 
-        {compileResults.length > 0 && (
+        {isTauri() && compileResults.length > 0 && (
           <div className="space-y-2 text-sm">
             <p>
               {successfulCompiles} von {compileResults.length} Skripten

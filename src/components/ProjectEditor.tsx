@@ -26,6 +26,8 @@ import {
 
 import { NwnSettings } from "@/components/settings/NwnSettings"
 
+import { isTauri } from "@/utils/isTauri"
+
 const initialConfig: ProjectConfig = {
   items: initialItems,
 
@@ -249,7 +251,7 @@ export function ProjectEditor() {
   }
 
   async function handleImport() {
-    if ("__TAURI_INTERNALS__" in window) {
+    if (isTauri()) {
       try {
         const importedConfig = await importProjectDesktop()
 
@@ -309,7 +311,9 @@ export function ProjectEditor() {
         </div>
       </div>
       <div className="mb-3">
-        <NwnSettings settings={nwnSettings} onChange={setNwnSettings} />
+        {isTauri() && (
+          <NwnSettings settings={nwnSettings} onChange={setNwnSettings} />
+        )}
       </div>
       <div className="mx-auto max-w-6xl space-y-8">
         <section className="space-y-3">

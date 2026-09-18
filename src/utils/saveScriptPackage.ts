@@ -1,6 +1,7 @@
 import JSZip from "jszip"
 
 import type { GeneratedScriptFile } from "@/types/scripts"
+import { isTauri } from "./isTauri"
 
 export async function saveScriptPackage(
   scripts: GeneratedScriptFile[],
@@ -12,7 +13,7 @@ export async function saveScriptPackage(
     zip.file(script.filename, script.content)
   }
 
-  if ("__TAURI_INTERNALS__" in window) {
+  if (isTauri()) {
     await saveScriptPackageDesktop(zip, filename)
     return
   }

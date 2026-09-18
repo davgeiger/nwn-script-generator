@@ -1,4 +1,5 @@
 import type { ProjectConfig } from "@/types/config"
+import { isTauri } from "@/utils/isTauri"
 
 export async function exportProject(
   config: ProjectConfig,
@@ -6,7 +7,7 @@ export async function exportProject(
 ) {
   const json = JSON.stringify(config, null, 2)
 
-  if ("__TAURI_INTERNALS__" in window) {
+  if (isTauri()) {
     await exportProjectDesktop(json, filename)
     return
   }
