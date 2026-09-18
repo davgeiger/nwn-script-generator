@@ -34,6 +34,7 @@
     ],
     "android": {
       "debugApplicationIdSuffix": ".debug"
-    }
+    },
+    "externalBin": ["../binaries/nwnsc"]
   }
 }

@@ -9,15 +9,41 @@
     "fs:default",
     {
       "identifier": "fs:allow-write-text-file",
-      "allow": [{ "path": "$HOME/**/*" }]
+      "allow": [
+        {
+          "path": "$HOME/**/*"
+        }
+      ]
     },
     {
       "identifier": "fs:allow-write-file",
-      "allow": [{ "path": "$HOME/**/*" }]
+      "allow": [
+        {
+          "path": "$HOME/**/*"
+        },
+        {
+          "path": "$APPLOCALDATA/**/*"
+        }
+      ]
     },
     {
       "identifier": "fs:allow-read-text-file",
-      "allow": [{ "path": "$HOME/**/*" }]
+      "allow": [
+        {
+          "path": "$HOME/**/*"
+        }
+      ]
+    },
+    "shell:default",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "../binaries/nwnsc",
+          "sidecar": true,
+          "args": true
+        }
+      ]
     }
   ]
 }

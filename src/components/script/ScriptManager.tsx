@@ -18,6 +18,8 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import type { GeneratedScriptFile } from "@/types/scripts"
 
+import { compileScripts } from "@/utils/compileScripts"
+
 type ScriptManagerProps = {
   config: ProjectConfig
 }
@@ -188,6 +190,17 @@ export function ScriptManager({ config }: ScriptManagerProps) {
           }
         >
           Testskripte herunterladen
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            void compileScripts(
+              normalScripts,
+              "C:/Steam/steamapps/common/Neverwinter Nights"
+            )
+          }
+        >
+          Skripte kompilieren
         </Button>
       </div>
     </div>
