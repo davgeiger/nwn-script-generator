@@ -36,12 +36,16 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
     useState<GeneratedScriptFile | null>(null)
   const [compileResults, setCompileResults] = useState<CompileResult[]>([])
   const [isCompiling, setIsCompiling] = useState(false)
+  const [showCompileDetails, setShowCompileDetails] = useState(false)
+  const [compileError, setCompileError] = useState<string | null>(null)
 
   const scriptFiles = useMemo(() => generateScriptFiles(config), [config])
 
   async function handleCompile() {
     setIsCompiling(true)
     setCompileResults([])
+    setCompileError(null)
+    setShowCompileDetails(false)
 
     try {
       const results = await compileScripts(
@@ -51,6 +55,8 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
       )
 
       setCompileResults(results)
+    } catch (error) {
+      setCompileError(error instanceof Error ? error.message : String(error))
     } finally {
       setIsCompiling(false)
     }
@@ -93,6 +99,9 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
   )
 
   const failedCompiles = compileResults.filter((result) => !result.success)
+
+  const compileSuccessful =
+    compileResults.length > 0 && failedCompiles.length === 0
 
   return (
     <div className="space-y-3">
@@ -240,10 +249,17 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
         )}
 
         {isTauri() && compileResults.length > 0 && (
-          <div className="space-y-2 text-sm">
-            <p>
-              {successfulCompiles} von {compileResults.length} Skripten
-              erfolgreich kompiliert und installiert.
+          <div className="w-full space-y-2 rounded-md border p-3 text-sm">
+            <p
+              className={
+                compileSuccessful
+                  ? "font-medium text-green-600"
+                  : "font-medium text-destructive"
+              }
+            >
+              {compileSuccessful
+                ? `${successfulCompiles} von ${compileResults.length} Skripten erfolgreich kompiliert und installiert.`
+                : `${failedCompiles.length} von ${compileResults.length} Skripten konnten nicht installiert werden.`}
             </p>
 
             {warningCount > 0 && (
@@ -253,17 +269,59 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
               </p>
             )}
 
-            {failedCompiles.map((result) => (
-              <div key={result.filename}>
-                <p className="font-medium">{result.filename}</p>
+            {(warningCount > 0 || failedCompiles.length > 0) && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowCompileDetails((current) => !current)}
+              >
+                {showCompileDetails ? "Details ausblenden" : "Details anzeigen"}
+              </Button>
+            )}
 
-                {result.error && (
-                  <p className="whitespace-pre-wrap text-destructive">
-                    {result.error}
-                  </p>
-                )}
+            {showCompileDetails && (
+              <div className="space-y-3 border-t pt-3">
+                {compileResults.map((result) => {
+                  if (result.warnings.length === 0 && !result.error) {
+                    return null
+                  }
+
+                  return (
+                    <div key={result.filename} className="space-y-1">
+                      <p className="font-medium">{result.filename}</p>
+
+                      {result.warnings.map((warning, index) => (
+                        <p
+                          key={`${result.filename}-warning-${index}`}
+                          className="whitespace-pre-wrap text-muted-foreground"
+                        >
+                          {warning}
+                        </p>
+                      ))}
+
+                      {result.error && (
+                        <p className="whitespace-pre-wrap text-destructive">
+                          {result.error}
+                        </p>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
-            ))}
+            )}
+
+            {isTauri() && compileError && (
+              <div className="w-full rounded-md border p-3 text-sm">
+                <p className="font-medium text-destructive">
+                  Kompilierung konnte nicht gestartet werden.
+                </p>
+
+                <p className="mt-1 whitespace-pre-wrap text-destructive">
+                  {compileError}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

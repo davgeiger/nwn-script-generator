@@ -36,19 +36,12 @@ export async function compileScripts(
     )
   }
 
-  console.log("Skripte für Compiler vorbereitet:", scripts)
-  console.log("NWN Installation:", nwnInstallPath)
-
   const { appLocalDataDir, join } = await import("@tauri-apps/api/path")
 
   const appDataPath = await appLocalDataDir()
   const sourcePath = await join(appDataPath, workingDirectory)
 
-  console.log("Compiler-Arbeitsverzeichnis:", sourcePath)
-
   const developmentPath = await join(nwnHomePath, "development")
-
-  console.log("NWN Development:", developmentPath)
 
   await mkdir(developmentPath, {
     recursive: true,
@@ -59,78 +52,82 @@ export async function compileScripts(
   )
 
   for (const script of compilableScripts) {
-    const scriptPath = await join(sourcePath, script.filename)
-    const ncsFilename = script.filename.replace(/\.nss$/i, ".ncs")
-    const compiledPath = await join(sourcePath, ncsFilename)
+    try {
+      const scriptPath = await join(sourcePath, script.filename)
+      const ncsFilename = script.filename.replace(/\.nss$/i, ".ncs")
+      const compiledPath = await join(sourcePath, ncsFilename)
 
-    if (await exists(compiledPath)) {
-      await remove(compiledPath)
-    }
+      if (await exists(compiledPath)) {
+        await remove(compiledPath)
+      }
 
-    const command = Command.sidecar("../binaries/nwnsc", [
-      "-h",
-      nwnHomePath,
-      "-n",
-      nwnInstallPath,
-      "-i",
-      sourcePath,
-      "-b",
-      sourcePath,
-      scriptPath,
-    ])
+      const command = Command.sidecar("../binaries/nwnsc", [
+        "-h",
+        nwnHomePath,
+        "-n",
+        nwnInstallPath,
+        "-i",
+        sourcePath,
+        "-b",
+        sourcePath,
+        scriptPath,
+      ])
 
-    const output = await command.execute()
+      const output = await command.execute()
 
-    const compilerOutput = `${output.stdout}\n${output.stderr}`
+      const compilerOutput = `${output.stdout}\n${output.stderr}`
 
-    const warnings = compilerOutput
-      .split(/\r?\n/)
-      .filter((line) => line.includes("Warning:"))
-      .map((line) => line.trim())
+      const warnings = compilerOutput
+        .split(/\r?\n/)
+        .filter((line) => line.includes("Warning:"))
+        .map((line) => line.trim())
 
-    console.log(`Compiler: ${script.filename}`)
-    console.log("Exit Code:", output.code)
-    console.log("stdout:", output.stdout)
-    console.log("stderr:", output.stderr)
+      if (output.code !== 0) {
+        results.push({
+          filename: script.filename,
+          success: false,
+          installed: false,
+          warnings,
+          error:
+            output.stderr.trim() ||
+            output.stdout.trim() ||
+            `Compiler wurde mit Exit-Code ${output.code} beendet.`,
+        })
 
-    if (output.code !== 0) {
+        continue
+      }
+
+      if (!(await exists(compiledPath))) {
+        results.push({
+          filename: script.filename,
+          success: false,
+          installed: false,
+          warnings,
+          error: `Keine NCS erzeugt: ${ncsFilename}`,
+        })
+
+        continue
+      }
+
+      const targetPath = await join(developmentPath, ncsFilename)
+
+      await copyFile(compiledPath, targetPath)
+
+      results.push({
+        filename: script.filename,
+        success: true,
+        installed: true,
+        warnings,
+      })
+    } catch (error) {
       results.push({
         filename: script.filename,
         success: false,
         installed: false,
-        warnings,
-        error:
-          output.stderr.trim() ||
-          output.stdout.trim() ||
-          `Compiler wurde mit Exit-Code ${output.code} beendet.`,
+        warnings: [],
+        error: error instanceof Error ? error.message : String(error),
       })
-
-      continue
     }
-
-    if (!(await exists(compiledPath))) {
-      results.push({
-        filename: script.filename,
-        success: false,
-        installed: false,
-        warnings,
-        error: `Keine NCS erzeugt: ${ncsFilename}`,
-      })
-
-      continue
-    }
-
-    const targetPath = await join(developmentPath, ncsFilename)
-    await copyFile(compiledPath, targetPath)
-
-    results.push({
-      filename: script.filename,
-      success: true,
-      installed: true,
-      warnings,
-    })
-
-    console.log(`Installiert: ${targetPath}`)
   }
 
   return results
