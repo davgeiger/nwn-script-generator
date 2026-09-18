@@ -18,7 +18,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import type { GeneratedScriptFile } from "@/types/scripts"
 
-import { compileScripts } from "@/utils/compileScripts"
+import { compileScripts, type CompileResult } from "@/utils/compileScripts"
 
 import type { NwnSettings } from "@/storage/nwnSettings"
 
@@ -32,7 +32,27 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewScript, setPreviewScript] =
     useState<GeneratedScriptFile | null>(null)
+  const [compileResults, setCompileResults] = useState<CompileResult[]>([])
+  const [isCompiling, setIsCompiling] = useState(false)
+
   const scriptFiles = useMemo(() => generateScriptFiles(config), [config])
+
+  async function handleCompile() {
+    setIsCompiling(true)
+    setCompileResults([])
+
+    try {
+      const results = await compileScripts(
+        normalScripts,
+        nwnSettings.installPath,
+        nwnSettings.homePath
+      )
+
+      setCompileResults(results)
+    } finally {
+      setIsCompiling(false)
+    }
+  }
 
   const normalScripts = scriptFiles.filter(
     (script) =>
@@ -60,6 +80,17 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
   const selectedTestScript =
     testScripts.find((script) => script.filename === selectedTestFilename) ??
     null
+
+  const successfulCompiles = compileResults.filter(
+    (result) => result.success && result.installed
+  ).length
+
+  const warningCount = compileResults.reduce(
+    (count, result) => count + result.warnings.length,
+    0
+  )
+
+  const failedCompiles = compileResults.filter((result) => !result.success)
 
   return (
     <div className="space-y-3">
@@ -196,17 +227,41 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
         </Button>
         <Button
           variant="outline"
-          onClick={() =>
-            void compileScripts(
-              normalScripts,
-              nwnSettings.installPath,
-              nwnSettings.homePath
-            )
+          disabled={
+            isCompiling || !nwnSettings.installPath || !nwnSettings.homePath
           }
-          disabled={!nwnSettings.installPath || !nwnSettings.homePath}
+          onClick={() => void handleCompile()}
         >
-          Skripte kompilieren und installieren
+          {isCompiling ? "Kompiliere..." : "Kompilieren und installieren"}
         </Button>
+
+        {compileResults.length > 0 && (
+          <div className="space-y-2 text-sm">
+            <p>
+              {successfulCompiles} von {compileResults.length} Skripten
+              erfolgreich kompiliert und installiert.
+            </p>
+
+            {warningCount > 0 && (
+              <p className="text-muted-foreground">
+                {warningCount} Compiler-Warnung
+                {warningCount !== 1 ? "en" : ""}.
+              </p>
+            )}
+
+            {failedCompiles.map((result) => (
+              <div key={result.filename}>
+                <p className="font-medium">{result.filename}</p>
+
+                {result.error && (
+                  <p className="whitespace-pre-wrap text-destructive">
+                    {result.error}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

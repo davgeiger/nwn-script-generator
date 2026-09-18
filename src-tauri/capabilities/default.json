@@ -31,18 +31,29 @@
       ]
     },
     {
-      "identifier": "fs:allow-read-text-file",
+      "identifier": "fs:allow-remove",
       "allow": [
+        {
+          "path": "$APPLOCALDATA/**/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-copy-file",
+      "allow": [
+        {
+          "path": "$APPLOCALDATA/**/*"
+        },
         {
           "path": "$HOME/**/*"
         }
       ]
     },
     {
-      "identifier": "fs:allow-read-file",
+      "identifier": "fs:allow-read-text-file",
       "allow": [
         {
-          "path": "$APPLOCALDATA/**/*"
+          "path": "$HOME/**/*"
         }
       ]
     },

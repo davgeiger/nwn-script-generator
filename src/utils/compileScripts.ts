@@ -1,15 +1,25 @@
 import type { GeneratedScriptFile } from "@/types/scripts"
 
+export type CompileResult = {
+  filename: string
+  success: boolean
+  installed: boolean
+  warnings: string[]
+  error?: string
+}
+
 export async function compileScripts(
   scripts: GeneratedScriptFile[],
   nwnInstallPath: string,
   nwnHomePath: string
-) {
+): Promise<CompileResult[]> {
   const { Command } = await import("@tauri-apps/plugin-shell")
-  const { BaseDirectory, exists, mkdir, readFile, writeFile, writeTextFile } =
+  const { BaseDirectory, copyFile, exists, mkdir, remove, writeTextFile } =
     await import("@tauri-apps/plugin-fs")
 
   const workingDirectory = "compiler"
+
+  const results: CompileResult[] = []
 
   await mkdir(workingDirectory, {
     baseDir: BaseDirectory.AppLocalData,
@@ -50,6 +60,12 @@ export async function compileScripts(
 
   for (const script of compilableScripts) {
     const scriptPath = await join(sourcePath, script.filename)
+    const ncsFilename = script.filename.replace(/\.nss$/i, ".ncs")
+    const compiledPath = await join(sourcePath, ncsFilename)
+
+    if (await exists(compiledPath)) {
+      await remove(compiledPath)
+    }
 
     const command = Command.sidecar("../binaries/nwnsc", [
       "-h",
@@ -65,30 +81,57 @@ export async function compileScripts(
 
     const output = await command.execute()
 
+    const compilerOutput = `${output.stdout}\n${output.stderr}`
+
+    const warnings = compilerOutput
+      .split(/\r?\n/)
+      .filter((line) => line.includes("Warning:"))
+      .map((line) => line.trim())
+
     console.log(`Compiler: ${script.filename}`)
     console.log("Exit Code:", output.code)
     console.log("stdout:", output.stdout)
     console.log("stderr:", output.stderr)
 
-    const ncsFilename = script.filename.replace(/\.nss$/i, ".ncs")
-    const compiledPath = await join(sourcePath, ncsFilename)
-
     if (output.code !== 0) {
-      console.error(`Kompilierung fehlgeschlagen: ${script.filename}`)
+      results.push({
+        filename: script.filename,
+        success: false,
+        installed: false,
+        warnings,
+        error:
+          output.stderr.trim() ||
+          output.stdout.trim() ||
+          `Compiler wurde mit Exit-Code ${output.code} beendet.`,
+      })
+
       continue
     }
 
     if (!(await exists(compiledPath))) {
-      console.error(`Keine NCS erzeugt: ${ncsFilename}`)
+      results.push({
+        filename: script.filename,
+        success: false,
+        installed: false,
+        warnings,
+        error: `Keine NCS erzeugt: ${ncsFilename}`,
+      })
+
       continue
     }
 
-    const compiledData = await readFile(compiledPath)
-
     const targetPath = await join(developmentPath, ncsFilename)
+    await copyFile(compiledPath, targetPath)
 
-    await writeFile(targetPath, compiledData)
+    results.push({
+      filename: script.filename,
+      success: true,
+      installed: true,
+      warnings,
+    })
 
     console.log(`Installiert: ${targetPath}`)
   }
+
+  return results
 }
