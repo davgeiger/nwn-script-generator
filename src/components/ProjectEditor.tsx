@@ -18,6 +18,14 @@ import { importProject, importProjectDesktop } from "@/storage/importProject"
 import { exportProject } from "@/storage/exportProject"
 import { ConfirmDialog } from "./common/ConfirmDialog"
 
+import {
+  loadNwnSettings,
+  saveNwnSettings,
+  type NwnSettings as NwnSettingsType,
+} from "@/storage/nwnSettings"
+
+import { NwnSettings } from "@/components/settings/NwnSettings"
+
 const initialConfig: ProjectConfig = {
   items: initialItems,
 
@@ -94,12 +102,19 @@ export function ProjectEditor() {
   })
   const [pendingImport, setPendingImport] = useState<ProjectConfig | null>(null)
   const [resetDialogOpen, setResetDialogOpen] = useState(false)
+  const [nwnSettings, setNwnSettings] = useState<NwnSettingsType>(() =>
+    loadNwnSettings()
+  )
 
   const activeBuild = getActiveBuild(config)
 
   useEffect(() => {
     saveProject(config)
   }, [config])
+
+  useEffect(() => {
+    saveNwnSettings(nwnSettings)
+  }, [nwnSettings])
 
   if (!activeBuild) {
     return null
@@ -293,7 +308,9 @@ export function ProjectEditor() {
           </Button>
         </div>
       </div>
-
+      <div className="mb-3">
+        <NwnSettings settings={nwnSettings} onChange={setNwnSettings} />
+      </div>
       <div className="mx-auto max-w-6xl space-y-8">
         <section className="space-y-3">
           <BuildManager
@@ -342,7 +359,8 @@ export function ProjectEditor() {
           }}
         />
 
-        <ScriptManager config={config} />
+        <ScriptManager config={config} nwnSettings={nwnSettings} />
+
         <ItemListEditor
           items={config.items}
           onItemChange={handleItemChange}

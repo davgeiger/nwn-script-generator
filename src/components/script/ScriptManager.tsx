@@ -20,11 +20,14 @@ import type { GeneratedScriptFile } from "@/types/scripts"
 
 import { compileScripts } from "@/utils/compileScripts"
 
+import type { NwnSettings } from "@/storage/nwnSettings"
+
 type ScriptManagerProps = {
   config: ProjectConfig
+  nwnSettings: NwnSettings
 }
 
-export function ScriptManager({ config }: ScriptManagerProps) {
+export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
   const [showTestScripts, setShowTestScripts] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [previewScript, setPreviewScript] =
@@ -196,11 +199,13 @@ export function ScriptManager({ config }: ScriptManagerProps) {
           onClick={() =>
             void compileScripts(
               normalScripts,
-              "C:/Steam/steamapps/common/Neverwinter Nights"
+              nwnSettings.installPath,
+              nwnSettings.homePath
             )
           }
+          disabled={!nwnSettings.installPath || !nwnSettings.homePath}
         >
-          Skripte kompilieren
+          Skripte kompilieren und installieren
         </Button>
       </div>
     </div>

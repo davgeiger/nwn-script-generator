@@ -8,15 +8,7 @@
     "dialog:default",
     "fs:default",
     {
-      "identifier": "fs:allow-write-text-file",
-      "allow": [
-        {
-          "path": "$HOME/**/*"
-        }
-      ]
-    },
-    {
-      "identifier": "fs:allow-write-file",
+      "identifier": "fs:allow-mkdir",
       "allow": [
         {
           "path": "$HOME/**/*"
@@ -27,10 +19,30 @@
       ]
     },
     {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [{ "path": "$HOME/**/*" }, { "path": "$APPLOCALDATA/**/*" }]
+    },
+    {
+      "identifier": "fs:allow-write-file",
+      "allow": [
+        {
+          "path": "$HOME/**/*"
+        }
+      ]
+    },
+    {
       "identifier": "fs:allow-read-text-file",
       "allow": [
         {
           "path": "$HOME/**/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-read-file",
+      "allow": [
+        {
+          "path": "$APPLOCALDATA/**/*"
         }
       ]
     },
