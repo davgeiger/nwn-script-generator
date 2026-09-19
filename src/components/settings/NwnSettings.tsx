@@ -20,6 +20,7 @@ export function NwnSettings({ settings, onChange }: NwnSettingsProps) {
     const path = await open({
       directory: true,
       multiple: false,
+      recursive: true,
     })
 
     if (!path) {

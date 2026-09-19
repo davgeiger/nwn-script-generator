@@ -1,4 +1,5 @@
 import type { GeneratedScriptFile } from "@/types/scripts"
+import { isValidNwnHome, isValidNwnInstall } from "./validateNwnPaths"
 
 export type CompileResult = {
   filename: string
@@ -13,6 +14,16 @@ export async function compileScripts(
   nwnInstallPath: string,
   nwnHomePath: string
 ): Promise<CompileResult[]> {
+  if (!(await isValidNwnInstall(nwnInstallPath))) {
+    throw new Error(
+      "Das ausgewählte NWN-Installationsverzeichnis ist ungültig."
+    )
+  }
+
+  if (!(await isValidNwnHome(nwnHomePath))) {
+    throw new Error("Das ausgewählte NWN-Benutzerverzeichnis ist ungültig.")
+  }
+
   const { Command } = await import("@tauri-apps/plugin-shell")
   const { BaseDirectory, copyFile, exists, mkdir, remove, writeTextFile } =
     await import("@tauri-apps/plugin-fs")

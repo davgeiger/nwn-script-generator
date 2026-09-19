@@ -248,6 +248,18 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
           </Button>
         )}
 
+        {isTauri() && compileError && (
+          <div className="w-full rounded-md border p-3 text-sm">
+            <p className="font-medium text-destructive">
+              Kompilierung konnte nicht gestartet werden.
+            </p>
+
+            <p className="mt-1 whitespace-pre-wrap text-destructive">
+              {compileError}
+            </p>
+          </div>
+        )}
+
         {isTauri() && compileResults.length > 0 && (
           <div className="w-full space-y-2 rounded-md border p-3 text-sm">
             <p
@@ -308,18 +320,6 @@ export function ScriptManager({ config, nwnSettings }: ScriptManagerProps) {
                     </div>
                   )
                 })}
-              </div>
-            )}
-
-            {isTauri() && compileError && (
-              <div className="w-full rounded-md border p-3 text-sm">
-                <p className="font-medium text-destructive">
-                  Kompilierung konnte nicht gestartet werden.
-                </p>
-
-                <p className="mt-1 whitespace-pre-wrap text-destructive">
-                  {compileError}
-                </p>
               </div>
             )}
           </div>

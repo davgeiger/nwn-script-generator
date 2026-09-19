@@ -6,7 +6,9 @@
   "permissions": [
     "core:default",
     "dialog:default",
+    "shell:default",
     "fs:default",
+    "fs:allow-exists",
     {
       "identifier": "fs:allow-mkdir",
       "allow": [
@@ -57,7 +59,6 @@
         }
       ]
     },
-    "shell:default",
     {
       "identifier": "shell:allow-execute",
       "allow": [
