@@ -43,6 +43,9 @@ export function PropertyEditor({
   const [parameterValues, setParameterValues] = useState<
     Record<string, PropertyValue>
   >({})
+  const [replaceKeyValues, setReplaceKeyValues] = useState<
+    Record<string, PropertyValue>
+  >({})
   const [selectedOperation, setSelectedOperation] =
     useState<PropertyOperation>("add")
 
@@ -165,6 +168,13 @@ export function PropertyEditor({
       return true
     })
 
+  const areReplaceKeyValuesValid =
+    selectedOperation !== "replace" ||
+    !selectedProperty?.keyParameters?.length ||
+    selectedProperty.keyParameters.every(
+      (parameterId) => replaceKeyValues[parameterId] !== undefined
+    )
+
   function isNumberParameterInvalid(
     parameter: PropertyParameter,
     value: PropertyValue | undefined
@@ -193,6 +203,7 @@ export function PropertyEditor({
   function handlePropertyChange(propertyId: string | null) {
     setSelectedPropertyId(propertyId ?? "")
     setParameterValues({})
+    setReplaceKeyValues({})
   }
 
   function handleParameterChange(parameterId: string, value: PropertyValue) {
@@ -200,6 +211,22 @@ export function PropertyEditor({
       ...currentValues,
       [parameterId]: value,
     }))
+  }
+
+  function getCurrentKeyOptions(parameter: PropertyParameter) {
+    if (!selectedProperty) {
+      return []
+    }
+
+    const currentValues = new Set(
+      currentProperties
+        .filter((config) => config.propertyId === selectedProperty.id)
+        .map((config) => String(config.values[parameter.id]))
+    )
+
+    return (parameter.options ?? []).filter((option) =>
+      currentValues.has(String(option.value))
+    )
   }
 
   function handleAddProperty() {
@@ -211,12 +238,17 @@ export function PropertyEditor({
       propertyId: selectedProperty.id,
       operation: selectedOperation,
       values: parameterValues,
+      ...(selectedOperation === "replace" &&
+        selectedProperty.keyParameters?.length && {
+          replaceKeyValues,
+        }),
     }
 
     onAddProperty(propertyConfig)
 
     setSelectedPropertyId("")
     setParameterValues({})
+    setReplaceKeyValues({})
     setSelectedOperation("add")
   }
 
@@ -245,6 +277,8 @@ export function PropertyEditor({
           return !exists
 
         case "replace":
+          return true
+
         case "remove":
           return exists
       }
@@ -267,6 +301,7 @@ export function PropertyEditor({
             setSelectedOperation(value as PropertyOperation)
             setSelectedPropertyId("")
             setParameterValues({})
+            setReplaceKeyValues({})
           }}
         >
           <SelectTrigger>
@@ -318,6 +353,12 @@ export function PropertyEditor({
 
             const filteredOptions = getFilteredParameterOptions(parameter)
 
+            const currentKeyOptions = getCurrentKeyOptions(parameter)
+
+            const isReplaceKeyParameter =
+              selectedOperation === "replace" &&
+              selectedProperty.keyParameters?.includes(parameter.id)
+
             const selectedOption = parameter.options?.find(
               (option) =>
                 String(option.value) === String(parameterValues[parameter.id])
@@ -325,7 +366,32 @@ export function PropertyEditor({
 
             return (
               <div key={parameter.id} className="space-y-2">
-                <label className="text-sm font-medium">{parameter.label}</label>
+                {isReplaceKeyParameter && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Vorhandener {parameter.label}
+                    </label>
+
+                    <SearchablePropertySelect
+                      options={currentKeyOptions}
+                      value={replaceKeyValues[parameter.id]}
+                      placeholder={`${parameter.label} auswählen`}
+                      searchPlaceholder={`${parameter.label} suchen...`}
+                      onChange={(value) =>
+                        setReplaceKeyValues((currentValues) => ({
+                          ...currentValues,
+                          [parameter.id]: value,
+                        }))
+                      }
+                    />
+                  </div>
+                )}
+
+                <label className="text-sm font-medium">
+                  {isReplaceKeyParameter
+                    ? `Neuer ${parameter.label}`
+                    : parameter.label}
+                </label>
 
                 {parameter.type === "number" && (
                   <Input
@@ -458,8 +524,15 @@ export function PropertyEditor({
         </div>
       )}
 
-      <Button disabled={!isPropertyValid} onClick={handleAddProperty}>
-        Eigenschaft hinzufügen
+      <Button
+        disabled={!isPropertyValid || !areReplaceKeyValuesValid}
+        onClick={handleAddProperty}
+      >
+        {selectedOperation === "add"
+          ? "Eigenschaft hinzufügen"
+          : selectedOperation === "replace"
+            ? "Eigenschaft ersetzen"
+            : "Eigenschaft entfernen"}
       </Button>
     </div>
   )

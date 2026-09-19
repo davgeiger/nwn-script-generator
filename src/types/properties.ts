@@ -67,4 +67,5 @@ export type ItemPropertyConfig = {
   propertyId: string
   operation: PropertyOperation
   values: Record<string, PropertyValue>
+  replaceKeyValues?: Record<string, PropertyValue>
 }

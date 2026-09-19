@@ -38,9 +38,26 @@ export function resolveTierState(
 
         switch (property.operation) {
           case "add":
-          case "replace":
             propertyMap.set(propertyKey, property)
             break
+
+          case "replace": {
+            if (property.replaceKeyValues) {
+              const oldPropertyKey = getPropertyKey({
+                ...property,
+                values: {
+                  ...property.values,
+                  ...property.replaceKeyValues,
+                },
+              })
+
+              propertyMap.delete(oldPropertyKey)
+            }
+
+            propertyMap.set(propertyKey, property)
+            break
+          }
+
           case "remove":
             propertyMap.delete(propertyKey)
             break
@@ -117,9 +134,25 @@ export function resolveLevelState(
 
         switch (property.operation) {
           case "add":
-          case "replace":
             propertyMap.set(propertyKey, property)
             break
+
+          case "replace": {
+            if (property.replaceKeyValues) {
+              const oldPropertyKey = getPropertyKey({
+                ...property,
+                values: {
+                  ...property.values,
+                  ...property.replaceKeyValues,
+                },
+              })
+
+              propertyMap.delete(oldPropertyKey)
+            }
+
+            propertyMap.set(propertyKey, property)
+            break
+          }
 
           case "remove":
             propertyMap.delete(propertyKey)
