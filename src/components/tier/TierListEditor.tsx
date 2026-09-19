@@ -87,6 +87,10 @@ export function TierListEditor({
     )
   }
 
+  function hasTierChanges(tier: TierConfig): boolean {
+    return tier.items.some((item) => item.properties.length > 0)
+  }
+
   return (
     <div className="space-y-3">
       <h2 className="text-lg font-semibold">Tier Editor</h2>
@@ -133,15 +137,29 @@ export function TierListEditor({
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {tiers.map((tier) => (
-                  <Button
-                    key={tier.id}
-                    variant={tier.id === selectedTierId ? "default" : "outline"}
-                    onClick={() => setSelectedTierId(tier.id)}
-                  >
-                    Tier {tier.tier}
-                  </Button>
-                ))}
+                {tiers.map((tier) => {
+                  const hasChanges = hasTierChanges(tier)
+                  const isSelected = tier.id === selectedTierId
+
+                  return (
+                    <Button
+                      key={tier.id}
+                      variant="outline"
+                      className={
+                        hasChanges
+                          ? isSelected
+                            ? "border-green-700 bg-green-600 text-white hover:bg-green-700 dark:bg-green-700"
+                            : "border-green-600 bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-950 dark:text-green-300"
+                          : isSelected
+                            ? "border-red-700 bg-red-600 text-white hover:bg-red-700 dark:bg-red-700"
+                            : "border-red-600 bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-950 dark:text-red-300"
+                      }
+                      onClick={() => setSelectedTierId(tier.id)}
+                    >
+                      Tier {tier.tier}
+                    </Button>
+                  )
+                })}
               </div>
             </div>
 
