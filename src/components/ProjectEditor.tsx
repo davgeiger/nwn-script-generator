@@ -27,6 +27,9 @@ import { Button } from "./ui/button"
 
 import { isTauri } from "@/utils/isTauri"
 
+import { detectNwnHome } from "@/utils/detectNwnHome"
+import { detectNwnInstallation } from "@/utils/detectNwnInstallation"
+
 const initialConfig: ProjectConfig = {
   items: initialItems,
 
@@ -115,6 +118,62 @@ export function ProjectEditor() {
   useEffect(() => {
     saveNwnSettings(nwnSettings)
   }, [nwnSettings])
+
+  useEffect(() => {
+    if (!isTauri() || nwnSettings.homePath) {
+      return
+    }
+
+    async function detectHome() {
+      try {
+        const detected = await detectNwnHome()
+
+        if (!detected) {
+          return
+        }
+
+        setNwnSettings((currentSettings) => ({
+          ...currentSettings,
+          homePath: detected,
+        }))
+      } catch (error) {
+        console.error(
+          "NWN-Home konnte nicht automatisch erkannt werden:",
+          error
+        )
+      }
+    }
+
+    void detectHome()
+  }, [nwnSettings.homePath])
+
+  useEffect(() => {
+    if (!isTauri() || nwnSettings.installPath) {
+      return
+    }
+
+    async function detectInstallation() {
+      try {
+        const detected = await detectNwnInstallation()
+
+        if (!detected) {
+          return
+        }
+
+        setNwnSettings((currentSettings) => ({
+          ...currentSettings,
+          installPath: detected,
+        }))
+      } catch (error) {
+        console.error(
+          "NWN-Installation konnte nicht automatisch erkannt werden:",
+          error
+        )
+      }
+    }
+
+    void detectInstallation()
+  }, [nwnSettings.installPath])
 
   const activeBuild = getActiveBuild(config)
 
