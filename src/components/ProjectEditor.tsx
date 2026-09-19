@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react"
 import { loadProject, saveProject } from "@/storage/projectStorage"
+import { importProject, importProjectDesktop } from "@/storage/importProject"
+import { exportProject } from "@/storage/exportProject"
+import {
+  loadNwnSettings,
+  saveNwnSettings,
+  type NwnSettings as NwnSettingsType,
+} from "@/storage/nwnSettings"
 
 import { getActiveBuild, getBuildItems } from "@/resolvers/buildResolver"
 
@@ -10,21 +17,13 @@ import type { LevelItem } from "@/types/items"
 import { TierListEditor } from "@/components/tier/TierListEditor"
 import { ItemListEditor } from "@/components/item/ItemListEditor"
 import { ScriptManager } from "@/components/script/ScriptManager"
+import { ConfirmDialog } from "@/components/common/ConfirmDialog"
+import { NwnSettings } from "@/components/settings/NwnSettings"
+import { AboutDialog } from "@/components/common/AboutDialog"
 
 import { BuildManager } from "./build/BuildManager"
 import { BuildItemAssignment } from "./build/BuildItemAssignment"
 import { Button } from "./ui/button"
-import { importProject, importProjectDesktop } from "@/storage/importProject"
-import { exportProject } from "@/storage/exportProject"
-import { ConfirmDialog } from "./common/ConfirmDialog"
-
-import {
-  loadNwnSettings,
-  saveNwnSettings,
-  type NwnSettings as NwnSettingsType,
-} from "@/storage/nwnSettings"
-
-import { NwnSettings } from "@/components/settings/NwnSettings"
 
 import { isTauri } from "@/utils/isTauri"
 
@@ -104,11 +103,10 @@ export function ProjectEditor() {
   })
   const [pendingImport, setPendingImport] = useState<ProjectConfig | null>(null)
   const [resetDialogOpen, setResetDialogOpen] = useState(false)
+  const [aboutDialogOpen, setAboutDialogOpen] = useState(false)
   const [nwnSettings, setNwnSettings] = useState<NwnSettingsType>(() =>
     loadNwnSettings()
   )
-
-  const activeBuild = getActiveBuild(config)
 
   useEffect(() => {
     saveProject(config)
@@ -117,6 +115,8 @@ export function ProjectEditor() {
   useEffect(() => {
     saveNwnSettings(nwnSettings)
   }, [nwnSettings])
+
+  const activeBuild = getActiveBuild(config)
 
   if (!activeBuild) {
     return null
@@ -373,6 +373,17 @@ export function ProjectEditor() {
         />
       </div>
 
+      <div className="mt-8 flex justify-center border-t pt-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => setAboutDialogOpen(true)}
+        >
+          Über
+        </Button>
+      </div>
+
       <ConfirmDialog
         open={pendingImport !== null}
         onOpenChange={(open) => {
@@ -400,6 +411,8 @@ export function ProjectEditor() {
           setConfig(structuredClone(initialConfig))
         }}
       />
+
+      <AboutDialog open={aboutDialogOpen} onOpenChange={setAboutDialogOpen} />
     </>
   )
 }
