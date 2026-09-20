@@ -77,6 +77,11 @@ fn is_nwn_installation(path: &std::path::Path) -> bool {
         .is_file()
         && path.join("data").is_dir()
 }
+#[cfg(target_os = "windows")]
+#[tauri::command]
+fn validate_nwn_installation(path: String) -> bool {
+    is_nwn_installation(std::path::Path::new(&path))
+}
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -95,7 +100,8 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![        
-        detect_nwn_installation
+        detect_nwn_installation,
+        validate_nwn_installation
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

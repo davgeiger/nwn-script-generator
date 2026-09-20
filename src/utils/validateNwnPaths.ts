@@ -1,3 +1,4 @@
+import { invoke } from "@tauri-apps/api/core"
 import { exists } from "@tauri-apps/plugin-fs"
 import { join } from "@tauri-apps/api/path"
 
@@ -17,8 +18,5 @@ export async function isValidNwnInstall(path: string) {
     return false
   }
 
-  const nwmain = await join(path, "bin", "win32", "nwmain.exe")
-  const data = await join(path, "data")
-
-  return (await exists(nwmain)) && (await exists(data))
+  return invoke<boolean>("validate_nwn_installation", { path })
 }
