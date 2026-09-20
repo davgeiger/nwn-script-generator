@@ -42,18 +42,32 @@ export function AboutDialog({ open, onOpenChange }: AboutDialogProps) {
       return
     }
 
-    if (!licenseText && isTauri()) {
+    if (!licenseText) {
       try {
         setLicenseError(null)
 
-        const { resolveResource } = await import("@tauri-apps/api/path")
-        const { readTextFile } = await import("@tauri-apps/plugin-fs")
+        let text: string
 
-        const licensePath = await resolveResource(
-          "THIRD_PARTY_LICENSES/nwnsc.txt"
-        )
+        if (isTauri()) {
+          const { resolveResource } = await import("@tauri-apps/api/path")
+          const { readTextFile } = await import("@tauri-apps/plugin-fs")
 
-        const text = await readTextFile(licensePath)
+          const licensePath = await resolveResource(
+            "THIRD_PARTY_LICENSES/nwnsc.txt"
+          )
+
+          text = await readTextFile(licensePath)
+        } else {
+          const response = await fetch(
+            `${import.meta.env.BASE_URL}THIRD_PARTY_LICENSES/nwnsc.txt`
+          )
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+          }
+
+          text = await response.text()
+        }
 
         setLicenseText(text)
       } catch (error) {
@@ -86,16 +100,14 @@ export function AboutDialog({ open, onOpenChange }: AboutDialogProps) {
 
             <p>nwnsc – NWScript Compiler</p>
 
-            {isTauri() && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => void handleShowLicense()}
-              >
-                {showLicense ? "Lizenz ausblenden" : "Lizenz anzeigen"}
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => void handleShowLicense()}
+            >
+              {showLicense ? "Lizenz ausblenden" : "Lizenz anzeigen"}
+            </Button>
 
             {showLicense && licenseText && (
               <pre className="max-h-80 overflow-auto rounded-md border p-3 text-xs whitespace-pre-wrap">

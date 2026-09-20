@@ -37,7 +37,7 @@
     },
     "externalBin": ["../binaries/nwnsc"],
     "resources": {
-      "../THIRD_PARTY_LICENSES/nwnsc.txt": "THIRD_PARTY_LICENSES/nwnsc.txt"
+      "../public/THIRD_PARTY_LICENSES/nwnsc.txt": "THIRD_PARTY_LICENSES/nwnsc.txt"
     }
   }
 }
