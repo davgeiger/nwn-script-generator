@@ -84,6 +84,100 @@ Die Skriptvorschau ermöglicht es, den generierten NWScript-Code vor der weitere
 
 ![Skriptvorschau](docs/images/script-preview.png)
 
+
+### Generierte Skripte
+
+Der Generator erstellt mehrere Skripte mit unterschiedlichen Aufgaben.
+
+#### `inc_lvlitems.nss`
+
+Dieses Include enthält die zentrale Logik der konfigurierten Item-Progression.
+
+Darin wird unter anderem festgelegt:
+
+- welche Items zu einem Build gehören,
+- ab welchem Charakterlevel ein Item verfügbar ist,
+- welche Eigenschaften in den einzelnen Tiers hinzugefügt, ersetzt oder entfernt werden.
+
+Das Include wird von den anderen generierten Skripten verwendet und nicht direkt ausgeführt.
+
+#### Level-Up-Skripte
+
+Für die Originalkampagne und **Hordes of the Underdark** stellt der Generator angepasste Versionen der von den Kampagnenmodulen verwendeten Level-Up-Skripte bereit:
+
+- `m1q0_levelup.nss`
+- `nw_o0_levelup.nss`
+- `x1_playerlevelup.nss`
+
+Die Skripte behalten die ursprüngliche Level-Up-Logik der Kampagne bei und ergänzen den Aufruf der generierten Item-Progression.
+
+Werden die kompilierten `.ncs`-Dateien im `development`-Verzeichnis abgelegt, werden die gleichnamigen Skripte der Kampagnenmodule zur Laufzeit durch diese Versionen ersetzt. Die Kampagnenmodule selbst müssen daher nicht im Toolset angepasst werden.
+
+Welches Level-Up-Skript verwendet wird, hängt vom jeweiligen Kampagnenmodul ab.
+
+#### `lvl_update_items.nss`
+
+Dieses Skript aktualisiert die verwalteten Items entsprechend dem aktuellen Charakterlevel.
+
+Es kann unabhängig von einem Level-Up manuell ausgeführt werden. Dadurch lässt sich die Item-Progression beispielsweise nach Änderungen an der Konfiguration erneut auf einen bestehenden Charakter anwenden.
+
+Dazu muss zunächst der Debug-Modus von Neverwinter Nights aktiviert werden:
+
+```text
+DebugMode 1
+```
+
+Anschließend kann das Skript über die Konsole ausgeführt werden:
+
+```text
+dm_runscript lvl_update_items
+```
+
+Das Skript prüft die für den Charakter vorgesehenen Items und wendet die bis zum aktuellen Level erreichte Progression an.
+
+`lvl_update_items` eignet sich insbesondere, um Änderungen an den generierten Item-Eigenschaften zu testen oder auf einen bereits bestehenden Spielstand anzuwenden.
+
+#### `lvl_rebuild.nss`
+
+`lvl_rebuild` erstellt die vom Generator verwalteten Items vollständig neu.
+
+Ausführung:
+
+```text
+dm_runscript lvl_rebuild
+```
+
+Dabei werden die vorhandenen verwalteten Items entfernt und anhand ihrer im Toolset erstellten Blueprints neu erzeugt. Anschließend wird die zum aktuellen Charakterlevel gehörende Progression erneut angewendet.
+
+Das Skript ist insbesondere dann hilfreich, wenn die zugrunde liegenden `.uti`-Blueprints geändert wurden. Änderungen am Blueprint werden von `lvl_update_items` nicht automatisch auf ein bereits vorhandenes Item übertragen.
+
+**Achtung:** Beim Rebuild werden die vorhandenen verwalteten Items durch neu erzeugte Exemplare ersetzt. Nachträgliche Änderungen am vorhandenen Item gehen dadurch verloren.
+
+#### Update oder Rebuild?
+
+Für Änderungen an der über den Generator definierten Item-Progression genügt normalerweise:
+
+```text
+dm_runscript lvl_update_items
+```
+
+Wurden dagegen die eigentlichen `.uti`-Blueprints verändert, sollte verwendet werden:
+
+```text
+dm_runscript lvl_rebuild
+```
+
+Kurz zusammengefasst:
+
+- **`lvl_update_items`** – vorhandene Items auf die aktuelle Progression aktualisieren
+- **`lvl_rebuild`** – Items aus den Blueprints neu erstellen und anschließend die aktuelle Progression anwenden
+
+### Kompilierte Skripte
+
+Neverwinter Nights führt die kompilierte `.ncs`-Datei aus. Änderungen an einer `.nss`-Datei werden daher erst wirksam, nachdem das Skript erneut kompiliert wurde.
+
+Die Desktopanwendung kann diese Kompilierung direkt mit `nwnsc` durchführen und die erzeugten Dateien im `development`-Verzeichnis des NWN-Benutzerverzeichnisses ablegen.
+
 ## Desktopanwendung
 
 Die Tauri-Desktopversion kann die generierten Skripte direkt mit `nwnsc` kompilieren und die erzeugten Dateien im `development`-Ordner des NWN-Benutzerverzeichnisses ablegen.
