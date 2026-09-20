@@ -4,7 +4,7 @@ Der **NWN Skript Generator** ist eine Anwendung zur Erstellung von Level-Up-Skri
 
 Mit der Anwendung können Items definiert werden, die sich abhängig vom Charakterlevel weiterentwickeln. Die gewünschten Item-Eigenschaften werden über ein Tier-System konfiguriert und anschließend automatisch als NWScript-Skripte generiert.
 
-Die Anwendung steht als Windows-Desktopanwendung auf Basis von Tauri zur Verfügung.
+Die Anwendung steht neben der Webseite auch als Windows-Desktopanwendung auf Basis von Tauri zur Verfügung.
 
 ## Features
 
@@ -46,7 +46,7 @@ Für jedes Item werden unter anderem folgende Angaben festgelegt:
 
 Die eigentlichen Item-Blueprints müssen im **Neverwinter Nights Toolset** erstellt werden.
 
-Die ResRef im Skript Generator muss mit der ResRef des entsprechenden Blueprints übereinstimmen. Die benötigten Blueprints müssen im `development`-Verzeichnis des NWN-Benutzerverzeichnisses vorhanden sein.
+ResRef und Tag im Skript Generator müssen mit den entsprechenden Blueprints übereinstimmen. Die benötigten Blueprints müssen im `development`-Verzeichnis des NWN-Benutzerverzeichnisses vorhanden sein.
 
 ## Tier Editor
 
