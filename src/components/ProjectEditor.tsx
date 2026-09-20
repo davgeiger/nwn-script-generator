@@ -331,7 +331,7 @@ export function ProjectEditor() {
     <>
       <div className="mb-3">
         {" "}
-        <h1 className="mb-1 text-xl font-bold">Item Skript Generator</h1>
+        <h1 className="mb-1 text-xl font-bold">NWN Item Skript Generator</h1>
         <div className="flex gap-1">
           <Button variant="outline" onClick={handleImport}>
             Importieren
